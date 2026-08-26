@@ -1,0 +1,1679 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>新生先导培训 · 职业与社团导航</title>
+  <style>
+    :root {
+      --paper: #f7f7f3;
+      --white: #ffffff;
+      --ink: #101314;
+      --muted: #687174;
+      --line: #dfe3df;
+      --yellow: #e7f34b;
+      --blue: #4fa7ff;
+      --red: #ff5e56;
+      --green: #4bc49b;
+      --shadow: 0 18px 42px rgba(16, 19, 20, .08);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      letter-spacing: 0;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .app-shell { min-height: 100vh; display: grid; grid-template-columns: 250px minmax(0, 1fr); transition: grid-template-columns .28s ease; }
+    .rail {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 28px 22px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--line);
+      background: var(--white);
+    }
+    .brand { display: flex; align-items: center; gap: 11px; margin-bottom: 38px; }
+    .brand-mark { width: 28px; height: 28px; display: grid; place-items: center; background: var(--ink); color: var(--yellow); font-weight: 900; border-radius: 7px; }
+    .brand-copy { line-height: 1.05; font-size: 13px; font-weight: 800; }
+    .brand-copy small { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; font-weight: 500; }
+    .rail-toggle { width: 100%; display: flex; align-items: center; justify-content: center; gap: 7px; margin: 0 0 26px; padding: 8px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--white); color: var(--muted); font-size: 11px; font-weight: 800; }
+    .rail-toggle:hover { color: var(--ink); border-color: var(--ink); }
+    .rail-toggle-icon { font-size: 15px; line-height: 1; }
+    .rail-label { margin: 0 0 14px 3px; color: var(--muted); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+    .chapter-list { display: grid; gap: 6px; }
+    .chapter {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 27px 1fr;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 8px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      background: transparent;
+      text-align: left;
+      color: var(--muted);
+    }
+    .chapter:hover, .chapter.active { color: var(--ink); background: #f4f6f4; border-color: var(--line); }
+    .chapter.active { box-shadow: inset 3px 0 var(--blue); }
+    .chapter-no { width: 24px; height: 24px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 6px; font-size: 11px; font-weight: 800; }
+    .chapter.active .chapter-no { background: var(--ink); color: var(--yellow); border-color: var(--ink); }
+    .chapter-title { font-size: 12px; font-weight: 700; }
+    .chapter-note { display: block; margin-top: 2px; font-size: 11px; font-weight: 500; }
+    .rail-footer { margin-top: auto; padding-top: 22px; border-top: 1px solid var(--line); }
+    .live-pill { display: inline-flex; gap: 7px; align-items: center; padding: 6px 9px; background: var(--ink); color: white; border-radius: 999px; font-size: 11px; font-weight: 800; }
+    .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 4px rgba(255, 94, 86, .14); }
+    .rail-footer p { margin: 12px 0 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+    .app-shell.collapsed { grid-template-columns: 72px minmax(0, 1fr); }
+    .app-shell.collapsed .rail { padding-inline: 11px; }
+    .app-shell.collapsed .brand { justify-content: center; }
+    .app-shell.collapsed .brand-copy,
+    .app-shell.collapsed .rail-label,
+    .app-shell.collapsed .chapter-title,
+    .app-shell.collapsed .rail-footer { display: none; }
+    .app-shell.collapsed .rail-toggle { margin-bottom: 26px; padding-inline: 0; }
+    .app-shell.collapsed .rail-toggle-text { display: none; }
+    .app-shell.collapsed .rail-toggle-icon { transform: rotate(180deg); }
+    .app-shell.collapsed .chapter { grid-template-columns: 1fr; justify-items: center; padding-inline: 0; }
+
+    main { min-width: 0; padding: 0 48px 64px; }
+    .topbar { height: 72px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
+    .crumb { color: var(--muted); font-size: 12px; }
+    .crumb strong { color: var(--ink); }
+    .toolbar { display: flex; gap: 8px; }
+    .tool-btn { height: 34px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--white); color: var(--ink); font-size: 12px; font-weight: 800; }
+    .tool-btn:hover { border-color: var(--ink); }
+    .tool-btn.primary { background: var(--ink); color: var(--white); border-color: var(--ink); }
+
+    .screen { display: none; max-width: 1240px; margin: 0 auto; padding-top: 44px; animation: rise .35s ease both; }
+    .screen.active { display: block; }
+    @keyframes rise { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+    .eyebrow { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .eyebrow::before { content: ""; width: 24px; height: 3px; background: var(--blue); }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 860px; margin: 16px 0 18px; font-size: clamp(38px, 6vw, 78px); line-height: .98; letter-spacing: -.05em; }
+    h2 { margin: 12px 0 10px; font-size: clamp(26px, 3.4vw, 47px); line-height: 1.05; letter-spacing: -.04em; }
+    h3 { margin-bottom: 8px; font-size: 16px; }
+    .lead { max-width: 620px; color: var(--muted); font-size: 22px; line-height: 1.75; }
+    .screen[data-screen-panel="0"] .lead { max-width: 820px; font-size: 30px; line-height: 1.55; }
+    .hero-row { display: block; }
+    .hero-stamp { position: relative; min-height: 360px; overflow: hidden; padding: 25px; border-radius: var(--radius); background: var(--ink); color: var(--white); isolation: isolate; }
+    .hero-stamp::after { content: ""; position: absolute; z-index: -1; left: -10%; top: 44%; width: 120%; height: 1px; background: linear-gradient(90deg, transparent, rgba(231,243,75,.9), transparent); box-shadow: 0 0 24px rgba(231,243,75,.6); animation: scan 4.2s ease-in-out infinite; }
+    @keyframes scan { 0%, 100% { transform: translateY(-112px); opacity: .15; } 50% { transform: translateY(126px); opacity: 1; } }
+    .hero-stamp::before { content: "LIVE / 01"; position: absolute; top: 26px; right: 28px; color: var(--yellow); font-size: 11px; font-weight: 900; letter-spacing: .12em; }
+    .hero-stamp h3 { position: relative; z-index: 2; max-width: 270px; margin-top: 50px; font-size: 29px; line-height: 1.14; letter-spacing: -.04em; }
+    .hero-stamp p { max-width: 280px; color: #b4bcbc; font-size: 12px; line-height: 1.7; }
+    .stamp-meta { position: absolute; top: 26px; left: 25px; right: 25px; display: flex; justify-content: space-between; color: #7f8b8b; font-size: 9px; font-weight: 900; letter-spacing: .14em; }
+    .hero-visual { position: absolute; right: 12px; bottom: 13px; width: 220px; height: 178px; }
+    .hero-visual::before { content: ""; position: absolute; inset: 4px; background: repeating-linear-gradient(90deg, rgba(255,255,255,.045) 0 1px, transparent 1px 27px), repeating-linear-gradient(0deg, rgba(255,255,255,.045) 0 1px, transparent 1px 27px); mask-image: linear-gradient(90deg, transparent, black 24%, black 76%, transparent); }
+    .signal { position: absolute; right: 25px; bottom: 27px; width: 160px; height: 120px; }
+    .signal::before, .signal::after { content: ""; position: absolute; inset: 12px 10px; border: 1px solid rgba(231,243,75,.48); border-radius: 50%; transform: rotate(21deg); }
+    .signal::after { inset: 29px 27px; border-color: rgba(79,167,255,.7); }
+    .signal-core { position: absolute; left: 50%; top: 50%; width: 14px; height: 14px; transform: translate(-50%, -50%); border-radius: 50%; background: var(--yellow); box-shadow: 0 0 0 7px rgba(231,243,75,.14); }
+    .signal-core::before, .signal-core::after { content: ""; position: absolute; inset: -19px; border: 1px solid rgba(231,243,75,.45); border-radius: 50%; animation: ping 2.4s ease-out infinite; }
+    .signal-core::after { animation-delay: 1.2s; }
+    @keyframes ping { 0% { transform: scale(.45); opacity: .8; } 100% { transform: scale(1.7); opacity: 0; } }
+    .visual-label { position: absolute; z-index: 2; padding: 5px 7px; border: 1px solid rgba(231,243,75,.45); border-radius: 4px; color: var(--yellow); background: rgba(16,19,20,.72); font-size: 8px; font-weight: 900; letter-spacing: .1em; }
+    .visual-label.one { top: 20px; right: 4px; }
+    .visual-label.two { bottom: 10px; left: 2px; color: var(--blue); border-color: rgba(79,167,255,.6); }
+    .hero-kpis { position: absolute; z-index: 2; left: 25px; right: 25px; bottom: 22px; display: flex; gap: 18px; }
+    .hero-kpi strong { display: block; color: var(--yellow); font-size: 20px; line-height: 1; }
+    .hero-kpi span { display: block; margin-top: 5px; color: #84908f; font-size: 8px; font-weight: 900; letter-spacing: .08em; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin: 60px 0 20px; }
+    .section-head p { margin-bottom: 5px; color: var(--muted); font-size: 13px; }
+    .chapter-intro { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 22px 0 28px; }
+    .chapter-intro-item { padding: 13px 15px; border-left: 3px solid var(--blue); background: #f4f6f4; }
+    .chapter-intro-item strong { display: block; margin-bottom: 5px; font-size: 13px; }
+    .chapter-intro-item span { color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 26px; }
+    .metric { padding: 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--white); }
+    .metric strong { display: block; font-size: 31px; letter-spacing: -.05em; }
+    .metric span { color: var(--muted); font-size: 12px; }
+
+    /* Reference-inspired opening stage: black, kinetic, and built for screen sharing. */
+    body.opening { background: #050708; }
+    .opening .rail, .opening main { background: #050708; color: #f7f8f4; border-color: #273134; }
+    .opening .brand-copy small, .opening .rail-label, .opening .chapter, .opening .rail-footer p, .opening .crumb { color: #91a0a0; }
+    .opening .chapter:hover, .opening .chapter.active { background: #101719; border-color: #273134; color: #f7f8f4; }
+    .opening .chapter-no { border-color: #334244; }
+    .opening .chapter.active .chapter-no { background: var(--yellow); border-color: var(--yellow); color: var(--ink); }
+    .opening .rail-toggle, .opening .tool-btn { background: #101719; border-color: #334244; color: #d7ded9; }
+    .opening .tool-btn.primary { background: var(--yellow); border-color: var(--yellow); color: var(--ink); }
+    .opening .topbar, .opening .footer-nav { border-color: #273134; }
+    .opening .screen[data-screen-panel="0"] { position: relative; min-height: calc(100vh - 73px); overflow: hidden; padding-top: clamp(72px, 12vh, 150px); }
+    .opening .screen[data-screen-panel="0"]::before { content: ""; position: absolute; inset: 0; z-index: 0; opacity: .52; background-image: linear-gradient(rgba(104,126,128,.14) 1px, transparent 1px), linear-gradient(90deg, rgba(104,126,128,.14) 1px, transparent 1px); background-size: 56px 56px; transform: perspective(420px) rotateX(58deg) scale(1.7) translateY(24%); transform-origin: center bottom; animation: grid-drift 15s linear infinite; }
+    .opening .screen[data-screen-panel="0"]::after { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(90deg, transparent 0 20%, rgba(79,167,255,.12) 20.1% 20.2%, transparent 20.3% 74%, rgba(231,243,75,.12) 74.1% 74.2%, transparent 74.3%); animation: signal-sweep 8s ease-in-out infinite; }
+    .opening .screen[data-screen-panel="0"] > * { position: relative; z-index: 1; }
+    @keyframes grid-drift { from { background-position: 0 0, 0 0; } to { background-position: 0 112px, 112px 0; } }
+    @keyframes signal-sweep { 0%, 100% { opacity: .25; transform: translateX(-2%); } 50% { opacity: .8; transform: translateX(2%); } }
+    .opening .hero-row { min-height: 0; }
+    .opening .eyebrow { color: #a9b4b1; }
+    .opening h1 { color: #f7f8f4; animation: title-in .7s cubic-bezier(.2,.8,.2,1) both; }
+    .screen[data-screen-panel="0"] h1 { line-height: 1.2; }
+    .opening .lead { color: #a9b4b1; animation: title-in .7s .12s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes title-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .opening .metric { background: rgba(16,23,25,.8); border-color: #273134; animation: metric-in .6s .2s both; }
+    .opening .metric:nth-child(2) { animation-delay: .28s; }
+    .opening .metric:nth-child(3) { animation-delay: .36s; }
+    .opening .metric strong { color: var(--yellow); }
+    .opening .metric span { color: #a9b4b1; }
+    @keyframes metric-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    .opening .hero-stamp { min-height: 430px; border: 1px solid #334244; background: rgba(16,23,25,.7); box-shadow: 0 0 0 1px rgba(79,167,255,.08), 0 26px 80px rgba(0,0,0,.35); animation: stage-in .8s .15s both; }
+    .opening .hero-stamp h3 { color: #f7f8f4; }
+    .opening .hero-stamp p { color: #a9b4b1; }
+    .opening .hero-visual { width: 260px; height: 210px; right: 0; bottom: 0; }
+    .opening .hero-visual::after { content: ""; position: absolute; inset: 12px 18px; border: 1px solid rgba(79,167,255,.42); border-radius: 50%; transform: rotate(-24deg); animation: orbit 4.8s linear infinite; }
+    .opening .signal { width: 190px; height: 150px; right: 26px; bottom: 18px; transform: rotate(-18deg); animation: signal-float 5s ease-in-out infinite; }
+    .opening .signal::before, .opening .signal::after { border-color: rgba(79,167,255,.66); }
+    .opening .signal::after { border-color: rgba(231,243,75,.8); }
+    .opening .signal-core { width: 18px; height: 18px; background: var(--red); box-shadow: 0 0 0 9px rgba(255,94,86,.14), 0 0 36px rgba(255,94,86,.8); animation: core-pulse 1.8s ease-in-out infinite; }
+    @keyframes signal-float { 0%, 100% { transform: rotate(-18deg) translateY(0); } 50% { transform: rotate(-14deg) translateY(-10px); } }
+    @keyframes core-pulse { 0%, 100% { transform: translate(-50%, -50%) scale(.9); } 50% { transform: translate(-50%, -50%) scale(1.22); } }
+    @keyframes orbit { to { transform: rotate(336deg); } }
+    .opening .section-head h2, .opening .section-head h3 { color: #f7f8f4; }
+    .opening .section-head p, .opening .year p { color: #91a0a0; }
+    .opening .timeline { border-color: #f7f8f4; }
+    .opening .year { border-color: #273134; }
+    .opening .year h3 { color: #f7f8f4; }
+    .opening .year-no { background: var(--blue); color: var(--ink); }
+    .opening .nav-btn { background: #101719; border-color: #334244; color: #d7ded9; }
+    .opening .nav-btn.next { background: var(--yellow); border-color: var(--yellow); color: var(--ink); }
+    @keyframes stage-in { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: translateX(0); } }
+
+    /* Full-screen promotional poster before the information chapters. */
+    body.promo { overflow: hidden; background: #ffffff; }
+    .promo .app-shell { display: block; }
+    .promo .rail { display: none; }
+    .promo main { min-height: 100vh; padding: 0; background: #ffffff; }
+    .promo .topbar { position: absolute; inset: 0 0 auto; z-index: 5; height: 74px; padding: 0 30px; border-bottom: 0; }
+    .promo .crumb { color: #7a8282; }
+    .promo .crumb strong { color: var(--ink); }
+    .promo .tool-btn { background: rgba(255,255,255,.78); backdrop-filter: blur(8px); }
+    .promo .tool-btn.primary { background: var(--ink); color: #fff; }
+    .promo .screen[data-screen-panel="0"] { position: relative; display: grid; place-items: center; width: 100%; max-width: none; min-height: 100vh; padding: 0; overflow: hidden; background: #ffffff; }
+    .promo-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .promo-grid { position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(16,19,20,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(16,19,20,.055) 1px, transparent 1px); background-size: 52px 52px; mask-image: linear-gradient(to bottom, transparent, black 20%, black 75%, transparent); }
+    .promo-copy { position: relative; z-index: 2; width: min(1100px, calc(100% - 80px)); pointer-events: none; }
+    .promo-kicker { display: flex; align-items: center; gap: 10px; color: #657071; font-size: 11px; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; }
+    .promo-kicker::before { content: ""; width: 34px; height: 3px; background: var(--blue); }
+    .promo-copy h1 { max-width: 790px; margin: 26px 0 18px; color: var(--ink); font-size: clamp(54px, 9vw, 132px); line-height: .86; letter-spacing: -.07em; text-shadow: 8px 8px 0 rgba(231,243,75,.78); animation: poster-title .8s cubic-bezier(.2,.8,.2,1) both; }
+    .promo-copy p { max-width: 470px; color: #657071; font-size: 14px; line-height: 1.8; animation: poster-title .8s .14s both; }
+    .promo-meta { display: flex; gap: 8px; margin-top: 32px; animation: poster-title .8s .24s both; }
+    .promo-meta span { padding: 8px 10px; border: 1px solid #dfe3df; border-radius: 5px; background: rgba(255,255,255,.8); color: #4f595a; font-size: 10px; font-weight: 900; letter-spacing: .08em; }
+    .promo-side-note { position: absolute; right: 8%; bottom: 13%; z-index: 2; max-width: 190px; color: #778181; font-size: 10px; line-height: 1.7; text-align: right; }
+    .promo-side-note strong { display: block; margin-bottom: 6px; color: var(--ink); font-size: 18px; letter-spacing: -.04em; }
+    @keyframes poster-title { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+    .role-controls { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 18px; }
+    .filter { padding: 8px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--white); color: var(--muted); font-size: 12px; font-weight: 800; }
+    .filter.active, .filter:hover { background: var(--ink); color: var(--white); border-color: var(--ink); }
+    .role-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 11px; }
+    .role-card { position: relative; min-height: 156px; padding: 17px; border: 1px solid var(--line); border-radius: 11px; background: var(--white); cursor: pointer; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+    .role-card:hover { transform: translateY(-3px); border-color: var(--ink); box-shadow: var(--shadow); }
+    .role-index { position: absolute; top: 16px; right: 16px; color: var(--muted); font-size: 10px; font-weight: 900; }
+    .role-card h3 { max-width: 185px; margin-top: 27px; font-size: 17px; letter-spacing: -.03em; }
+    .role-card p { min-height: 38px; margin-bottom: 15px; color: var(--muted); font-size: 18px; line-height: 1.55; }
+    .tag-row { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag { padding: 4px 7px; border-radius: 5px; background: #f0f2ef; color: #4e5759; font-size: 11px; font-weight: 700; }
+    .role-card[data-group="software"] .tag:first-child { background: #e4f1ff; color: #1269ae; }
+    .role-card[data-group="control"] .tag:first-child { background: #fff4b4; color: #716000; }
+    .role-card[data-group="robot"] .tag:first-child { background: #ddf7ed; color: #176d50; }
+    .role-salary { display: inline-flex; padding: 3px 8px; border-radius: 5px; background: #fff4b4; color: #716000; font-size: 11px; font-weight: 900; margin-top: 8px; }
+    .role-companies { margin-top: 8px; color: var(--muted); font-size: 11px; font-weight: 600; line-height: 1.5; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .club-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .club-card { min-height: 250px; padding: 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); cursor: pointer; }
+    .club-card:hover { border-color: var(--blue); box-shadow: var(--shadow); }
+    .club-top { display: flex; align-items: center; justify-content: flex-end; margin-bottom: 28px; }
+    .club-symbol { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 11px; background: var(--yellow); color: var(--ink); font-size: 18px; font-weight: 900; }
+    .club-card.featured .club-symbol { background: var(--blue); }
+    .club-code { color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .14em; }
+    .club-card h3 { margin-bottom: 9px; font-size: 22px; letter-spacing: -.04em; }
+    .club-card p { max-width: 360px; margin-bottom: 20px; color: var(--muted); font-size: 18px; line-height: 1.7; }
+    .club-card.featured p { color: var(--muted); }
+    .club-links { display: flex; flex-wrap: wrap; gap: 6px; }
+    .club-links span { padding: 5px 7px; border: 1px solid var(--line); border-radius: 5px; color: var(--muted); font-size: 11px; }
+    .club-card.featured .club-links span { border-color: var(--line); color: var(--muted); }
+    .club-disclaimer { margin: 14px 0 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
+    .screen[data-screen-panel="2"] .club-code { display: none; }
+    .screen[data-screen-panel="2"] .club-card > p { display: none; }
+
+    .timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 20px; border-top: 2px solid var(--ink); }
+    .year { min-height: 240px; padding: 20px 18px 18px 0; border-right: 1px solid var(--line); }
+    .year:not(:first-child) { padding-left: 18px; }
+    .year:last-child { border-right: 0; }
+    .year-no { display: inline-flex; padding: 5px 8px; background: var(--yellow); border-radius: 5px; font-size: 11px; font-weight: 900; }
+    .year h3 { margin-top: 29px; font-size: 20px; }
+    .year p { color: var(--muted); font-size: 18px; line-height: 1.65; }
+    .year ul { padding-left: 17px; margin: 0; color: #3d4748; font-size: 13px; line-height: 2; }
+    .screen[data-screen-panel="4"] .timeline { grid-template-columns: 1fr; }
+    .screen[data-screen-panel="4"] .year,
+    .screen[data-screen-panel="4"] .year:not(:first-child) { min-height: auto; padding: 24px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+    .screen[data-screen-panel="4"] .year:last-child { border-bottom: 0; }
+
+    .project-flow { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 24px; }
+    .project-step { min-height: 310px; padding: 18px; border: 1px solid var(--line); border-top: 4px solid var(--blue); border-radius: 10px; background: var(--white); }
+    .project-step:nth-child(2) { border-top-color: var(--yellow); }
+    .project-step:nth-child(3) { border-top-color: var(--green); }
+    .project-step:nth-child(4) { border-top-color: #9b7bff; }
+    .project-step:nth-child(5) { border-top-color: var(--red); }
+    .project-step-no { display: block; margin-bottom: 18px; color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .12em; }
+    .project-step h3 { margin-bottom: 10px; font-size: 19px; }
+    .project-step p { color: var(--muted); font-size: 14px; line-height: 1.65; }
+    .project-step ul { padding-left: 17px; margin: 14px 0 0; color: #3d4748; font-size: 12px; line-height: 1.8; }
+    .project-output { margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--line); color: var(--ink); font-size: 12px; font-weight: 800; line-height: 1.5; }
+
+    .year-route { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 28px; }
+    .year-route-card { position: relative; min-height: 440px; padding: 20px; border: 1px solid var(--line); border-top: 5px solid var(--blue); border-radius: 11px; background: var(--white); overflow: hidden; }
+    .year-route-card::after { content: ""; position: absolute; right: -34px; bottom: -42px; width: 110px; height: 110px; border: 1px solid rgba(79,167,255,.2); border-radius: 50%; box-shadow: 0 0 0 14px rgba(79,167,255,.05), 0 0 0 28px rgba(79,167,255,.035); }
+    .year-route-card:nth-child(2) { border-top-color: var(--yellow); }
+    .year-route-card:nth-child(2)::after { border-color: rgba(231,243,75,.28); box-shadow: 0 0 0 14px rgba(231,243,75,.08), 0 0 0 28px rgba(231,243,75,.04); }
+    .year-route-card:nth-child(3) { border-top-color: var(--green); }
+    .year-route-card:nth-child(3)::after { border-color: rgba(75,196,155,.28); box-shadow: 0 0 0 14px rgba(75,196,155,.08), 0 0 0 28px rgba(75,196,155,.04); }
+    .year-route-card:nth-child(4) { border-top-color: var(--red); }
+    .year-route-card:nth-child(4)::after { border-color: rgba(255,94,86,.28); box-shadow: 0 0 0 14px rgba(255,94,86,.08), 0 0 0 28px rgba(255,94,86,.04); }
+    .year-route-head { display: flex; align-items: start; justify-content: space-between; gap: 8px; }
+    .year-route-no { color: var(--muted); font-size: 10px; font-weight: 900; letter-spacing: .13em; }
+    .year-route-phase { display: inline-flex; padding: 5px 7px; border-radius: 5px; background: #eef6ff; color: #1269ae; font-size: 10px; font-weight: 900; }
+    .year-route-card:nth-child(2) .year-route-phase { background: #fff9c9; color: #716000; }
+    .year-route-card:nth-child(3) .year-route-phase { background: #e4f8ef; color: #176d50; }
+    .year-route-card:nth-child(4) .year-route-phase { background: #fff0ef; color: #a63c38; }
+    .year-route-card h3 { margin: 26px 0 9px; font-size: 23px; letter-spacing: -.04em; }
+    .year-route-goal { min-height: 50px; margin-bottom: 20px; color: var(--muted); font-size: 14px; line-height: 1.65; }
+    .year-route-section { position: relative; z-index: 1; margin-top: 16px; }
+    .year-route-label { display: block; margin-bottom: 7px; color: var(--ink); font-size: 10px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+    .year-route-list { display: grid; gap: 6px; padding: 0; margin: 0; list-style: none; color: #3d4748; font-size: 12px; line-height: 1.55; }
+    .year-route-list li { padding-left: 14px; }
+    .year-route-list li::before { content: "→"; margin-left: -14px; margin-right: 5px; color: var(--blue); font-weight: 900; }
+    .year-route-card:nth-child(2) .year-route-list li::before { color: #a79e00; }
+    .year-route-card:nth-child(3) .year-route-list li::before { color: #2b9d78; }
+    .year-route-card:nth-child(4) .year-route-list li::before { color: var(--red); }
+    .year-route-output { position: relative; z-index: 1; margin-top: 22px; padding: 10px 11px; border: 1px dashed var(--line); border-radius: 7px; background: #f7f8f5; color: var(--ink); font-size: 12px; font-weight: 800; line-height: 1.5; }
+    .year-route-output span { display: block; margin-bottom: 4px; color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+
+    /* Competition section */
+    .comp-controls { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 18px; }
+    .comp-filter { padding: 8px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--white); color: var(--muted); font-size: 12px; font-weight: 800; cursor: pointer; }
+    .comp-filter.active, .comp-filter:hover { background: var(--ink); color: var(--white); border-color: var(--ink); }
+    .comp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .comp-card { min-height: 260px; padding: 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); cursor: pointer; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+    .comp-card:hover { transform: translateY(-3px); border-color: var(--blue); box-shadow: var(--shadow); }
+    .comp-card.hardware .comp-badge { background: #fff4b4; color: #716000; }
+    .comp-card.software .comp-badge { background: #e4f1ff; color: #1269ae; }
+    .comp-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .comp-badge { display: inline-flex; padding: 4px 8px; border-radius: 5px; font-size: 10px; font-weight: 900; letter-spacing: .06em; white-space: nowrap; }
+    .comp-code { color: var(--muted); font-size: 10px; font-weight: 900; letter-spacing: .14em; }
+    .comp-card h3 { margin-bottom: 10px; font-size: 20px; letter-spacing: -.03em; }
+    .comp-card > p { margin-bottom: 14px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+    .comp-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+    .comp-tag { padding: 3px 7px; border-radius: 4px; background: #f0f2ef; color: #4e5759; font-size: 10px; font-weight: 700; }
+    .comp-kpi { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
+    .comp-kpi-item { text-align: center; }
+    .comp-kpi-item strong { display: block; color: var(--ink); font-size: 13px; font-weight: 800; }
+    .comp-kpi-item span { color: var(--muted); font-size: 9px; font-weight: 800; letter-spacing: .06em; }
+    .comp-detail { margin-top: 14px; padding: 14px; border-left: 3px solid var(--blue); background: #f4f6f4; }
+    .comp-detail strong { display: block; margin-bottom: 5px; font-size: 12px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+    .comp-detail p { margin: 0; color: #3d4647; font-size: 13px; line-height: 1.65; }
+    .comp-difficulty { display: inline-flex; gap: 3px; margin-top: 8px; }
+    .comp-difficulty-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+    .comp-difficulty-dot.filled { background: var(--ink); }
+    .comp-difficulty-dot.filled.medium { background: var(--yellow); }
+    .comp-difficulty-dot.filled.high { background: var(--red); }
+
+    @media (max-width: 980px) {
+      .comp-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .comp-card { padding: 16px; min-height: auto; }
+      .comp-card h3 { font-size: 17px; }
+      .comp-kpi { grid-template-columns: repeat(3, 1fr); }
+      .comp-controls { gap: 5px; }
+      .comp-filter { padding: 6px 9px; font-size: 11px; }
+    }
+
+    .route-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 18px; align-items: start; }
+    .route-panel { padding: 23px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); }
+    .route-panel h3 { font-size: 19px; }
+    .route-panel-note { margin: 7px 0 17px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .quiz-progress { margin: -4px 0 18px; color: var(--muted); font-size: 12px; }
+    .quiz-question { min-inline-size: 0; padding: 15px 0 13px; border: 0; border-top: 1px solid var(--line); margin: 0; }
+    .quiz-question:first-child { padding-top: 0; border-top: 0; }
+    .quiz-question legend { width: 100%; margin-bottom: 10px; color: var(--ink); font-size: 18px; font-weight: 800; line-height: 1.55; }
+    .quiz-option { display: flex; gap: 9px; align-items: flex-start; margin: 9px 0; color: #3b4445; font-size: 15px; line-height: 1.55; cursor: pointer; }
+    .quiz-option input { flex: 0 0 auto; accent-color: var(--ink); margin-top: 2px; }
+    .quiz-nav { display: flex; gap: 8px; margin-top: 14px; }
+    .quiz-nav .tool-btn { flex: 1; }
+    .route-option { display: flex; gap: 9px; align-items: flex-start; margin: 13px 0; color: #3b4445; font-size: 13px; line-height: 1.5; }
+    .route-option input { accent-color: var(--ink); margin-top: 2px; }
+    .route-output { min-height: 360px; padding: 28px; border-radius: var(--radius); background: var(--ink); color: var(--white); }
+    .route-output .eyebrow { color: #aab5b5; }
+    .route-output h3 { margin: 17px 0 9px; color: var(--yellow); font-size: 29px; letter-spacing: -.04em; }
+    .route-output p { max-width: 490px; color: #bcc5c3; font-size: 18px; line-height: 1.7; }
+    .route-result { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 26px; }
+    .result-cell { padding: 11px; border: 1px solid #354041; border-radius: 8px; }
+    .result-cell span { display: block; margin-bottom: 5px; color: #92a09f; font-size: 11px; }
+    .result-cell strong { font-size: 13px; }
+
+    .footer-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 58px; padding-top: 18px; border-top: 1px solid var(--line); }
+    .nav-btn { min-width: 110px; padding: 11px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--white); color: var(--ink); font-size: 12px; font-weight: 800; }
+    .nav-btn.next { background: var(--ink); color: var(--white); border-color: var(--ink); }
+    .nav-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+    .modal-backdrop { position: fixed; inset: 0; z-index: 10; display: none; place-items: center; padding: 20px; background: rgba(16,19,20,.58); backdrop-filter: blur(8px); }
+    .modal-backdrop.open { display: grid; }
+    .modal { position: relative; width: min(92vw, 1080px); height: min(86vh, 780px); overflow-y: auto; padding: 28px; border: 1px solid rgba(16,19,20,.12); border-radius: 16px; background: var(--white); box-shadow: 0 32px 90px rgba(0,0,0,.28); }
+    .close { width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 7px; background: var(--white); font-size: 16px; }
+    .modal-close { position: absolute; z-index: 2; top: 20px; right: 20px; }
+    .modal h3 { margin-top: 22px; font-size: 28px; letter-spacing: -.04em; }
+    .modal p { color: var(--muted); font-size: 18px; line-height: 1.7; }
+    .modal-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 13px; }
+    .modal-meta span { padding: 5px 8px; border-radius: 5px; background: #eef1ef; color: #4e5759; font-size: 11px; font-weight: 800; }
+    .modal-section { margin-top: 18px; }
+    .modal-label { display: block; margin-bottom: 6px; color: var(--ink); font-size: 12px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+    .modal-section p { margin-bottom: 0; font-size: 18px; }
+    .modal-list { display: grid; gap: 8px; padding: 0; margin: 18px 0 0; list-style: none; }
+    .modal-list li { padding: 10px; border-left: 3px solid var(--blue); background: #f4f6f4; color: #3d4647; font-size: 13px; }
+    .role-view { display: grid; grid-template-columns: 1fr; gap: 26px; margin-top: 18px; animation: role-reveal .38s cubic-bezier(.2,.8,.2,1) both; }
+    .role-view[hidden] { display: none !important; }
+    @keyframes role-reveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .role-view-body { min-width: 0; }
+    .role-view-body h3 { margin: 5px 0 10px; font-size: clamp(30px, 4vw, 48px); line-height: 1.02; letter-spacing: -.06em; }
+    .role-view-summary { max-width: 720px; margin: 0; color: var(--muted); font-size: 19px; line-height: 1.75; }
+    .role-view-desc { margin: 0; color: var(--ink); font-size: 17px; font-weight: 600; line-height: 1.65; }
+    .role-view-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 15px; }
+    .role-view-tags span { padding: 6px 8px; border-radius: 5px; background: #eef6ff; color: #1269ae; font-size: 10px; font-weight: 900; }
+    .role-view-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; padding: 12px; border-radius: 8px; background: #f4f6f4; }
+    .role-view-meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .role-view-meta-item strong { font-size: 14px; font-weight: 800; color: var(--ink); }
+    .role-view-meta-item span { font-size: 10px; font-weight: 700; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+    .role-view-desc { margin: 0; color: var(--ink); font-size: 17px; font-weight: 600; line-height: 1.65; }
+    .role-view-detail { display: grid; gap: 8px; padding: 0; margin-top: 20px; list-style: none; }
+    .role-view-detail li { padding: 11px 13px; border-left: 3px solid var(--blue); background: #f4f6f4; color: #3d4647; font-size: 13px; line-height: 1.6; }
+    .club-module { padding: 18px 0; border-top: 1px solid var(--line); }
+    .club-module:first-child { padding-top: 0; border-top: 0; }
+    .club-module h4 { margin: 0 0 8px; font-size: 19px; }
+    .club-module p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.75; }
+    .club-module-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+    .club-module-card { padding: 13px; border: 1px solid var(--line); border-radius: 9px; background: #f7f8f5; }
+    .club-department-btn { width: 100%; text-align: left; cursor: pointer; transition: border-color .2s ease, background .2s ease; }
+    .club-department-btn:hover, .club-department-btn:focus-visible { border-color: var(--blue); background: #eef6ff; outline: 0; }
+    .department-detail { margin-top: 12px; padding: 14px; border-left: 3px solid var(--blue); background: #eef6ff; }
+    .department-detail strong { display: block; margin-bottom: 5px; font-size: 15px; }
+    .department-detail p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+    .club-module-card strong { display: block; margin-bottom: 5px; font-size: 14px; }
+    .club-module-card span { color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .club-gallery { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 92px; gap: 10px; margin-top: 14px; padding-top: 18px; }
+    .club-gallery::before { content: "PHOTO WALL / CLICK TO EXPAND"; position: absolute; top: 0; left: 0; color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .14em; }
+    .club-gallery-item { position: relative; min-height: 0; height: 100%; display: grid; place-items: end start; overflow: hidden; padding: 10px; border: 0; border-radius: 9px; background: linear-gradient(135deg, #dbe7ee, #8ca7b5 48%, #334b58); color: white; font: inherit; font-size: 12px; font-weight: 800; text-align: left; cursor: zoom-in; isolation: isolate; transition: transform .24s ease, box-shadow .24s ease, filter .24s ease; }
+    .club-gallery-item.gallery-wide { grid-column: span 2; }
+    .club-gallery-item.gallery-tall { grid-row: span 2; }
+    .club-gallery-item.gallery-hero { grid-column: span 2; grid-row: span 2; font-size: 15px; }
+    .club-gallery-item::marker { display: none; }
+    .club-gallery-item::before { content: ""; position: absolute; inset: -45% 28% 35% -35%; z-index: -1; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.65) 50%, transparent 65%); transform: translateX(-120%) rotate(8deg); transition: transform .7s ease; }
+    .club-gallery-item::after { content: "OPEN / VIEW"; position: absolute; top: 10px; right: 10px; padding: 4px 6px; border: 1px solid rgba(255,255,255,.55); border-radius: 4px; background: rgba(16,19,20,.42); color: #fff; font-size: 8px; font-weight: 900; letter-spacing: .12em; opacity: 0; transform: translateY(-4px); transition: opacity .2s ease, transform .2s ease; }
+    .club-gallery-item:hover, .club-gallery-item:focus-visible { transform: translateY(-3px) scale(1.015); box-shadow: 0 14px 28px rgba(16,19,20,.18); filter: saturate(1.12); outline: 0; }
+    .club-gallery-item:hover::before, .club-gallery-item:focus-visible::before { transform: translateX(170%) rotate(8deg); }
+    .club-gallery-item:hover::after, .club-gallery-item:focus-visible::after { opacity: 1; transform: translateY(0); }
+    .club-gallery-item:nth-child(2) { background: linear-gradient(135deg, #f2e6b1, #bb8954 48%, #5b3c2c); }
+    .club-gallery-item:nth-child(3) { background: linear-gradient(135deg, #d7e8d9, #6c9d7e 48%, #294e3a); }
+    .club-gallery-item.gallery-tone-2 { background: linear-gradient(135deg, #f2e6b1, #bb8954 48%, #5b3c2c); }
+    .club-gallery-item.gallery-tone-3 { background: linear-gradient(135deg, #d7e8d9, #6c9d7e 48%, #294e3a); }
+    .club-gallery-item:not(.certificate) { background-image: linear-gradient(125deg, rgba(255,255,255,.12), transparent 42%), repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 1px, transparent 1px 18px), radial-gradient(circle at 76% 25%, rgba(231,243,75,.92) 0 2px, transparent 3px), linear-gradient(135deg, #dbe7ee, #8ca7b5 48%, #334b58); }
+    .club-gallery-item:nth-child(2):not(.certificate), .club-gallery-item.gallery-tone-2:not(.certificate) { background-image: linear-gradient(145deg, rgba(255,255,255,.1), transparent 44%), repeating-linear-gradient(0deg, rgba(255,255,255,.07) 0 1px, transparent 1px 16px), radial-gradient(circle at 72% 28%, rgba(255,224,126,.95) 0 2px, transparent 3px), linear-gradient(135deg, #f2e6b1, #bb8954 48%, #5b3c2c); }
+    .club-gallery-item:nth-child(3):not(.certificate), .club-gallery-item.gallery-tone-3:not(.certificate) { background-image: linear-gradient(125deg, rgba(255,255,255,.1), transparent 44%), repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0 1px, transparent 1px 20px), radial-gradient(circle at 78% 26%, rgba(130,255,192,.95) 0 2px, transparent 3px), linear-gradient(135deg, #d7e8d9, #6c9d7e 48%, #294e3a); }
+    .club-gallery-item.certificate { background-image: linear-gradient(135deg, rgba(255,255,255,.96), rgba(218,225,229,.92)), repeating-linear-gradient(0deg, rgba(16,19,20,.06) 0 1px, transparent 1px 12px), radial-gradient(circle at 78% 24%, #d8ad3e 0 9px, #f7e8a8 10px 13px, transparent 14px), linear-gradient(135deg, #f4f4f4, #bbc5cd 48%, #66717d); color: var(--ink); box-shadow: inset 0 0 0 1px rgba(16,19,20,.18), inset 0 0 0 8px rgba(255,255,255,.35); }
+    .club-gallery-item.certificate::after { border-color: rgba(16,19,20,.35); background: rgba(255,255,255,.72); color: var(--ink); }
+    .club-extra-content.lcr-mode { margin-top: 4px; }
+    .lcr-hero-strip { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(220px, .75fr); gap: 18px; align-items: stretch; margin-bottom: 16px; padding: 22px; border-radius: 12px; overflow: hidden; background: #101719; color: #f7f8f4; }
+    .lcr-hero-strip > div:first-child { position: relative; padding-right: 16px; }
+    .lcr-hero-strip > div:first-child::before { content: "LCR / ROBOCON"; display: block; margin-bottom: 24px; color: var(--yellow); font-size: 10px; font-weight: 900; letter-spacing: .16em; }
+    .lcr-hero-strip h4 { max-width: 500px; margin: 0 0 9px; font-size: clamp(25px, 3.2vw, 39px); line-height: 1.05; letter-spacing: -.05em; }
+    .lcr-hero-strip p { max-width: 560px; margin: 0; color: #a9b4b1; font-size: 14px; line-height: 1.7; }
+    .lcr-hero-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; align-content: end; }
+    .lcr-hero-stat { padding: 12px; border: 1px solid #334244; border-radius: 8px; background: rgba(255,255,255,.04); }
+    .lcr-hero-stat strong { display: block; color: var(--yellow); font-size: 24px; line-height: 1; }
+    .lcr-hero-stat span { display: block; margin-top: 6px; color: #a9b4b1; font-size: 10px; line-height: 1.4; }
+    .lcr-video-module { display: grid; grid-template-columns: .7fr 1.3fr; gap: 16px; align-items: center; margin: 0 0 16px; padding: 16px; border: 1px solid #d7dfdc; border-radius: 12px; background: #fff; }
+    .lcr-video-module h4 { margin: 0 0 7px; font-size: 20px; letter-spacing: -.03em; }
+    .lcr-video-module p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+    .lcr-video-module video { display: block; width: 100%; max-height: 360px; border-radius: 9px; background: #101719; object-fit: contain; }
+    .lcr-contact-layout { display: grid; grid-template-columns: minmax(0, 1fr) 180px; gap: 18px; align-items: center; }
+    .lcr-contact-layout p { max-width: 620px; }
+    .lcr-link-button { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; padding: 10px 13px; border-radius: 7px; background: var(--ink); color: #fff; font-size: 12px; font-weight: 800; text-decoration: none; transition: transform .2s ease, background .2s ease; }
+    .lcr-link-button:hover, .lcr-link-button:focus-visible { background: #1269ae; transform: translateY(-2px); outline: 0; }
+    .lcr-qr { margin: 0; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+    .lcr-qr img { display: block; width: 100%; height: auto; border-radius: 6px; }
+    .lcr-qr figcaption { margin-top: 6px; color: var(--muted); font-size: 10px; text-align: center; }
+    .lcr-mode .lcr-intro-module { padding: 20px; border: 1px solid #d7dfdc; border-radius: 12px; background: #f7f8f5; }
+    .lcr-mode .lcr-intro-module h4 { font-size: 22px; }
+    .lcr-mode .lcr-intro-module > p { max-width: 850px; font-size: 16px; line-height: 1.8; }
+    .lcr-mode .lcr-intro-module .club-module-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .lcr-mode .lcr-intro-module .club-module-card { min-height: 118px; border-top: 3px solid var(--blue); }
+    .lcr-mode .lcr-intro-module .club-module-card:nth-child(2) { border-top-color: var(--yellow); }
+    .lcr-mode .lcr-intro-module .club-module-card:nth-child(3) { border-top-color: var(--green); }
+    .lcr-mode .lcr-intro-module .club-module-card:nth-child(4) { border-top-color: var(--red); }
+    .club-gallery-item.has-photo { background-size: contain !important; background-position: center !important; background-repeat: no-repeat !important; background-color: #f4f5f2; text-shadow: 0 2px 12px rgba(0,0,0,.9); }
+    .club-gallery-item.has-photo::before { background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.48) 50%, transparent 70%); }
+    .club-gallery-item.has-photo::after { background: rgba(16,19,20,.62); }
+    .lcr-mode .club-gallery { display: block; column-count: 3; column-gap: 7px; margin-top: 10px; padding-top: 14px; }
+    .lcr-mode .club-gallery-item.has-photo { display: flex; align-items: flex-start; justify-content: center; width: 100%; height: auto; min-height: 0; margin: 0 0 7px; padding: 0; border: 1px solid #d7dfdc; border-radius: 10px; background: #f4f5f2; color: var(--ink); overflow: hidden; break-inside: avoid; }
+    .lcr-mode .club-gallery-item.has-photo.gallery-tall { grid-row: auto; }
+    .lcr-mode .club-gallery-item.has-photo .gallery-photo { display: block; width: 100%; max-width: none; height: auto; }
+    .lcr-mode .club-gallery-item.has-photo.gallery-wide,
+    .lcr-mode .club-gallery-item.has-photo.gallery-hero { grid-column: auto; }
+    .lcr-mode .club-gallery-item.has-photo { box-shadow: 0 7px 18px rgba(16,19,20,.08); transition: transform .22s ease, box-shadow .22s ease; }
+    .lcr-mode .club-gallery-item.has-photo:hover { transform: translateY(-4px); box-shadow: 0 14px 28px rgba(16,19,20,.16); }
+    .eica-mode .club-gallery { display: block; column-count: 3; column-gap: 7px; margin-top: 12px; padding-top: 14px; }
+    .eica-mode .eica-award-wall { position: relative; column-count: 3; padding-top: 34px; }
+    .eica-award-summary { position: absolute; top: 0; left: 0; display: flex; align-items: baseline; gap: 7px; }
+    .eica-award-summary strong { color: var(--ink); font-size: 18px; line-height: 1; }
+    .eica-award-summary span { color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .14em; text-transform: uppercase; }
+    .eica-mode .eica-award-wall::before { content: "2024–2025 AWARD WALL / CLICK TO EXPAND"; top: 8px; }
+    .eica-mode .club-gallery-item.has-photo { display: flex; align-items: flex-start; justify-content: center; width: 100%; height: auto; min-height: 0; margin: 0 0 7px; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: #f4f5f2; color: var(--ink); overflow: hidden; break-inside: avoid; box-shadow: 0 7px 18px rgba(16,19,20,.08); }
+    .eica-mode .club-gallery-item.has-photo .gallery-photo { display: block; width: 100%; max-width: none; height: auto; }
+    .eica-mode .eica-award-wall .award-caption { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 22px 10px 8px; background: linear-gradient(180deg, transparent, rgba(16,19,20,.82)); color: #fff; font-size: 11px; font-weight: 700; line-height: 1.35; text-shadow: none; }
+    .eica-mode .club-gallery-item.has-photo:hover { transform: translateY(-4px); box-shadow: 0 14px 28px rgba(16,19,20,.16); }
+    .share-figure { margin: 24px 0 0; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); box-shadow: var(--shadow); }
+    .share-figure img { display: block; width: 100%; max-height: 560px; object-fit: contain; border-radius: 10px; background: #f4f5f2; }
+    .share-figure figcaption { margin-top: 10px; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .06em; }
+    .image-viewer { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity .24s ease; }
+    .image-viewer[hidden] { display: none; }
+    .image-viewer.open { opacity: 1; pointer-events: auto; }
+    .image-viewer-backdrop { position: absolute; inset: 0; background: radial-gradient(circle at 50% 42%, rgba(79,167,255,.18), transparent 38%), rgba(7,10,11,.86); backdrop-filter: blur(10px); }
+    .image-viewer-stage { position: relative; z-index: 1; width: min(94vw, 1120px); display: grid; grid-template-columns: 48px minmax(0, 1fr) 48px; align-items: center; gap: 12px; }
+    .image-viewer-frame { position: relative; justify-self: center; width: fit-content; max-width: min(94vw, 1120px); display: grid; place-items: center; padding: 48px 34px 54px; border: 1px solid #dfe3df; border-radius: 16px; background: #f4f5f2; box-shadow: 0 30px 90px rgba(0,0,0,.28), 0 0 0 1px rgba(79,167,255,.12); overflow: hidden; }
+    .image-viewer-frame::before { content: "GALLERY / DETAIL VIEW"; position: absolute; top: 16px; left: 20px; color: #657071; font-size: 9px; font-weight: 900; letter-spacing: .16em; }
+    .image-viewer-art { width: auto; max-width: min(82vw, 900px); min-height: 0; padding: 0; border: 0; border-radius: 10px; background: transparent; box-shadow: 0 24px 60px rgba(0,0,0,.36); transform: scale(.92) rotateX(8deg); opacity: 0; transition: transform .42s cubic-bezier(.2,.8,.2,1), opacity .32s ease; }
+    .image-viewer-image { display: block; width: auto; height: auto; max-width: min(82vw, 900px); max-height: 64vh; border-radius: 10px; object-fit: contain; }
+    .image-viewer.open .image-viewer-art { transform: scale(1) rotateX(0); opacity: 1; }
+    .image-viewer-close, .image-viewer-nav { display: grid; place-items: center; border: 1px solid rgba(255,255,255,.25); background: rgba(16,19,20,.72); color: #fff; box-shadow: 0 10px 24px rgba(0,0,0,.25); transition: transform .2s ease, background .2s ease, border-color .2s ease; }
+    .image-viewer-close { position: absolute; z-index: 2; top: 12px; right: 14px; width: 34px; height: 34px; border-radius: 8px; font-size: 19px; }
+    .image-viewer-nav { width: 42px; height: 58px; border-radius: 10px; font-size: 28px; }
+    .image-viewer-close:hover, .image-viewer-nav:hover, .image-viewer-close:focus-visible, .image-viewer-nav:focus-visible { border-color: var(--yellow); background: rgba(231,243,75,.16); transform: translateY(-2px); outline: 0; }
+    .image-viewer-caption { position: absolute; right: 22px; bottom: 16px; left: 22px; display: flex; justify-content: space-between; gap: 12px; color: #b9c4c3; font-size: 11px; }
+    .image-viewer-caption { color: #657071; text-shadow: none; }
+    .image-viewer-caption strong { color: var(--ink); font-size: 13px; }
+    body.viewer-open { overflow: hidden; }
+    .club-contact { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+    .club-contact-card { flex: 1 1 180px; padding: 13px; border: 1px solid var(--line); border-radius: 9px; background: var(--white); }
+    .club-contact-card strong { display: block; margin-bottom: 4px; font-size: 14px; }
+    .club-contact-card span { color: var(--muted); font-size: 13px; }
+
+    @media (max-width: 980px) {
+      .app-shell { display: block; }
+      .app-shell { grid-template-columns: 1fr; }
+      .app-shell.collapsed { grid-template-columns: 1fr; }
+      .rail { position: relative; height: auto; padding: 18px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .brand { margin-bottom: 18px; }
+      .chapter-list { grid-template-columns: repeat(3, 1fr); }
+      .rail-footer { display: none; }
+      main { padding: 0 22px 48px; }
+      .hero-row, .route-layout { grid-template-columns: 1fr; }
+      .project-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .year-route { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .app-shell.collapsed .rail { position: fixed; z-index: 20; top: 10px; left: 10px; width: 42px; height: 42px; padding: 0; border: 0; background: transparent; }
+      .app-shell.collapsed .rail .brand,
+      .app-shell.collapsed .rail .rail-label,
+      .app-shell.collapsed .rail .chapter-list,
+      .app-shell.collapsed .rail .rail-footer { display: none; }
+      .app-shell.collapsed .rail .rail-toggle { width: 42px; height: 42px; margin: 0; padding: 0; border-color: var(--line); background: var(--white); box-shadow: var(--shadow); }
+      .app-shell.collapsed main { padding-top: 58px; }
+    }
+    @media (max-width: 640px) {
+      main { padding: 0 16px 36px; }
+      .topbar { height: auto; min-height: 66px; padding: 12px 0; gap: 10px; align-items: flex-start; }
+      .crumb { max-width: 42%; line-height: 1.5; }
+      .toolbar { max-width: 54%; flex-wrap: wrap; justify-content: flex-end; }
+      .tool-btn { height: 32px; padding: 0 9px; font-size: 11px; }
+      .rail { padding: 14px 16px; }
+      .brand { margin-bottom: 14px; }
+      .rail-toggle { margin-bottom: 16px; }
+      .rail-label { margin-bottom: 8px; }
+      .chapter-list { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 8px; scroll-snap-type: x proximity; scrollbar-width: thin; }
+      .chapter { flex: 0 0 148px; min-height: 56px; scroll-snap-align: start; }
+      .chapter-title { line-height: 1.35; }
+      .screen { padding-top: 30px; }
+      h1 { font-size: 42px; line-height: 1.02; }
+      h2 { font-size: 31px; }
+      .lead { font-size: 18px; }
+      .screen[data-screen-panel="0"] .lead { font-size: 20px; line-height: 1.65; }
+      .metric-row, .role-grid, .club-grid, .route-result { grid-template-columns: 1fr; }
+      .chapter-intro { grid-template-columns: 1fr; }
+      .metric { padding: 14px; }
+      .club-card { min-height: auto; padding: 18px; }
+      .route-panel, .route-output { padding: 18px; }
+      .route-output h3 { font-size: 24px; }
+      .route-output { min-height: 260px; }
+      .timeline { grid-template-columns: 1fr; }
+      .year, .year:not(:first-child) { min-height: auto; padding: 18px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+      .year:last-child { border-bottom: 0; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 10px; }
+      .modal-backdrop { padding: 12px; }
+      .modal { width: 96vw; height: 92vh; padding: 18px; }
+      .modal h3 { font-size: 24px; }
+      .role-view { grid-template-columns: 1fr; gap: 16px; }
+      .role-view-body h3 { font-size: 34px; }
+      .role-view-desc { font-size: 15px; }
+      .club-module-grid { grid-template-columns: 1fr; }
+      .lcr-hero-strip { grid-template-columns: 1fr; padding: 18px; }
+      .lcr-hero-strip > div:first-child::before { margin-bottom: 16px; }
+      .lcr-video-module { grid-template-columns: 1fr; }
+      .lcr-contact-layout { grid-template-columns: 1fr; }
+      .lcr-qr { width: 180px; }
+      .lcr-mode .lcr-intro-module .club-module-grid { grid-template-columns: 1fr; }
+      .club-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 94px; }
+      .lcr-mode .club-gallery { column-count: 2; column-gap: 6px; }
+      .club-gallery-item.gallery-wide, .club-gallery-item.gallery-hero { grid-column: span 2; }
+      .club-gallery-item.gallery-tall { grid-row: span 2; }
+      .lcr-mode .club-gallery-item.has-photo.gallery-tall { grid-row: auto; }
+      .project-flow { grid-template-columns: 1fr; }
+      .project-step { min-height: auto; }
+      .year-route { grid-template-columns: 1fr; }
+      .year-route-card { min-height: auto; }
+      .image-viewer { padding: 12px; }
+      .image-viewer-stage { width: 100%; grid-template-columns: 1fr; }
+      .image-viewer-frame { width: min(94vw, 620px); padding: 44px 14px 46px; }
+      .image-viewer-art, .image-viewer-image { max-width: calc(94vw - 28px); }
+      .image-viewer-image { max-height: 60vh; }
+      .image-viewer-nav { position: absolute; z-index: 2; bottom: 14px; width: 42px; height: 38px; }
+      .image-viewer-nav.prev { left: 18px; }
+      .image-viewer-nav.next { right: 18px; }
+      .quiz-question legend { font-size: 18px; }
+      .quiz-option { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="rail">
+      <div class="brand">
+        <div class="brand-copy">新生先导培训<small>CAREER & CLUB NAVIGATOR</small></div>
+      </div>
+      <button class="rail-toggle" id="railToggle" aria-label="收回侧栏" title="收回侧栏"><span class="rail-toggle-icon">‹</span><span class="rail-toggle-text">收回章节栏</span></button>
+      <p class="rail-label">Live sequence</p>
+      <nav class="chapter-list" aria-label="直播章节">
+        <button class="chapter active" data-screen="0"><span class="chapter-no">01</span><span class="chapter-title">成果开场<small class="chapter-note">先看到未来</small></span></button>
+        <button class="chapter" data-screen="1"><span class="chapter-no">02</span><span class="chapter-title">职业地图<small class="chapter-note">13 个工程岗位</small></span></button>
+        <button class="chapter" data-screen="2"><span class="chapter-no">03</span><span class="chapter-title">社团与战队<small class="chapter-note">找到入门路径</small></span></button>
+        <button class="chapter" data-screen="3"><span class="chapter-no">04</span><span class="chapter-title">竞赛导航<small class="chapter-note">赛事与价值</small></span></button>
+        <button class="chapter" data-screen="4"><span class="chapter-no">05</span><span class="chapter-title">项目拆解<small class="chapter-note">从想法到成品</small></span></button>
+        <button class="chapter" data-screen="5"><span class="chapter-no">06</span><span class="chapter-title">四年路线<small class="chapter-note">每一年学什么</small></span></button>
+        <button class="chapter" data-screen="6"><span class="chapter-no">07</span><span class="chapter-title">考研与升学<small class="chapter-note">把方向继续深入</small></span></button>
+        <button class="chapter" data-screen="7"><span class="chapter-no">08</span><span class="chapter-title">我的路线<small class="chapter-note">现场生成结果</small></span></button>
+      </nav>
+
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div class="crumb">协会先导培训 / <strong id="crumbTitle">宣传封面</strong></div>
+        <div class="toolbar">
+          <button class="tool-btn" id="fullscreenBtn">全屏展示</button>
+          <button class="tool-btn primary" id="nextTop">下一章 →</button>
+        </div>
+      </header>
+
+      <section class="screen active" data-screen-panel="0">
+        <div class="hero-row">
+          <div>
+            <div class="eyebrow">New student orientation · 2026</div>
+            <h1>先看到未来，<br><mark style="background: var(--yellow); padding: 0 .08em;">再决定从哪里出发。</mark></h1>
+            <p class="lead">这不是一场只讲 PPT 的介绍会。我们从真实项目、工程职业和社团实践出发，帮你在开学前看清一条可以开始的路。</p>
+            <div class="metric-row">
+              <div class="metric"><strong>13</strong><span>个职业方向</span></div>
+              <div class="metric"><strong>4</strong><span>个协会与社团</span></div>
+              <div class="metric"><strong>1</strong><span>张个人路线图</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="timeline" style="margin-top:0">
+          <div class="year"><span class="year-no">01</span><h3>看见成果</h3><p>先展示机器人、无人机、智能控制项目，建立对未来的直观印象。</p></div>
+          <div class="year"><span class="year-no">02</span><h3>认识职业</h3><p>从职业而不是专业出发，了解 13 类工程师在真实工作中做什么。</p></div>
+          <div class="year"><span class="year-no">03</span><h3>进入社团</h3><p>认识协会、LCR Robocon 战队和对应的项目入门路径</p></div>
+          <div class="year"><span class="year-no">04</span><h3>带走路线</h3><p>根据自己的兴趣现场生成一张大学四年学习路线。</p></div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen-panel="1">
+        <div class="eyebrow">Chapter 02 · career map</div>
+        <h2>不是选择专业，<br>是先认识你想成为的工程师。</h2>
+        <p class="lead">下面的 13 个职业覆盖软件、硬件、工业控制、机器人和智能系统。点击任意卡片，可以在直播时展开介绍。</p>
+        <div class="section-head"><div><div class="eyebrow">13 roles / 03 groups</div><h3>职业方向清单</h3></div><p>按职业族筛选</p></div>
+        <div class="role-controls">
+          <button class="filter active" data-filter="all">全部 13</button>
+          <button class="filter" data-filter="software">软件与系统 4</button>
+          <button class="filter" data-filter="control">硬件与控制 6</button>
+          <button class="filter" data-filter="robot">机器人与智能 3</button>
+        </div>
+        <div class="role-grid" id="roleGrid"></div>
+      </section>
+
+      <section class="screen" data-screen-panel="2">
+        <div class="eyebrow">Chapter 03 · club & team</div>
+        <h2>职业是目的，<br>社团是开始动手的地方。</h2>
+        <p class="club-disclaimer">本页社团信息持续更新中，不分排名先后，按提供资料实践顺序排列，欢迎各社团联系我们补充完善</p>
+        <div class="section-head"><div><div class="eyebrow">Practice entry</div><h3>社团与战队</h3></div></div>
+        <div class="club-grid">
+          <article class="club-card"><div class="club-top"><span class="club-code">EICA / EMBEDDED</span></div><h3>嵌入式智控协会</h3><p>广西科技大学嵌入式智控协会（Embedded Intelligent Control Association）专注于嵌入式系统学习、实践与创新，围绕物联网、单片机、人工智能、电力电子、国产替代软件与 OpenHarmony，提供培训、实验室实践、竞赛和项目协作平台。</p><div class="club-links"><span>嵌入式</span><span>电力电子</span><span>国产替代软件</span><span>OpenHarmony</span></div></article>
+          <article class="club-card"><div class="club-top"><span class="club-code">AIR / CONTROL</span></div><h3>低空飞行器协会</h3><p>围绕无人机、飞控、传感器和视觉系统展开实践，把控制理论变成空中动作；同时提供软件开发和算法竞赛方向。</p><div class="club-links"><span>飞控工程</span><span>机器视觉</span><span>嵌入式硬件</span><span>软件开发</span><span>算法竞赛</span></div></article>
+          <article class="club-card"><div class="club-top"><span class="club-code">POWER / AUTOMATION</span></div><h3>电气信息创新协会</h3><p>电气信息创新协会是在学院指导下成立的科创类学生社团，面向全校热爱电子、电气、嵌入式技术的同学，开展技术培训、电路实操、PCB 绘制、单片机与电力电子项目实训，组织备赛全国大学生电子设计竞赛、数学建模、工程训练等学科竞赛，搭建技术交流、项目实践、团队协作的平台，以赛促学，把课本理论转化为硬件实物，提升成员工程实践、硬件调试、文档撰写与团队协作能力。协会定期开展元器件基础、单片机基础、电源拓扑、嘉立创 PCB 设计等内部培训，组织校内选拔赛，选拔优秀队伍冲击省级、国家级科创赛事，营造学院科创实践氛围。</p><div class="club-links"><span>电力电子</span><span>电机控制</span><span>硬件测试</span></div></article>
+          <article class="club-card"><div class="club-top"><span class="club-code">AI / INNOVATION</span></div><h3>人工智能协会</h3><p>汇聚热爱 AI 与科创实践的同学，下设项目部、宣传部、办公室和实践部。聚焦技术交流、学科竞赛与项目实践，搭建从零基础到专业的成长阶梯，共同探索人工智能的魅力。</p><div class="club-links"><span>机器人及AI赛事</span><span>技术培训</span><span>项目实践</span><span>团队协作</span></div></article>
+          <article class="club-card featured"><div class="club-top"><span class="club-code">ROBOCON / TEAM</span></div><h3>LCR龙城机器人战队</h3><p>广西科技大学面向中国大学生机器人大赛 Robocon 组建的机器人团队，覆盖机械、电控、电路、算法与整机联调。</p><div class="club-links"><span>机械结构</span><span>电控开发</span><span>电路设计</span><span>算法视觉</span></div></article>
+        </div>
+      </section>
+
+      <section class="screen" data-screen-panel="3">
+        <div class="eyebrow">Chapter 04 · competition guide</div>
+        <h2>赛事是实践的第一入口，<br>也是简历上最硬的证据。</h2>
+        <p class="lead">以下竞赛覆盖硬件、嵌入式、算法、机器人和人工智能方向。从大一开始参与，把课堂知识变成可展示的作品。</p>
+        <div class="section-head"><div><div class="eyebrow">8 competitions / 2 categories</div><h3>竞赛一览</h3></div><p>按方向筛选</p></div>
+        <div class="comp-controls">
+          <button class="comp-filter active" data-filter="all">全部 8</button>
+          <button class="comp-filter" data-filter="hardware">硬件与嵌入式 4</button>
+          <button class="comp-filter" data-filter="software">软件与算法 4</button>
+        </div>
+        <div class="comp-grid" id="compGrid"></div>
+      </section>
+
+      <section class="screen" data-screen-panel="4">
+        <div class="eyebrow">Chapter 05 · project teardown</div>
+        <h2>一项嵌入式设计大赛作品，<br>怎样从赛题变成可交付的系统？</h2>
+        <p class="lead">把一个比赛项目拆成五个连续环节。新生不需要一开始学会全部，可以先从其中一个环节加入，再逐步理解整套工程流程。</p>
+        <div class="section-head"><div><div class="eyebrow">Embedded design workflow</div><h3>从需求到答辩</h3></div><p>每一步都有明确交付物</p></div>
+        <div class="project-flow">
+          <article class="project-step"><span class="project-step-no">01 / DEFINE</span><h3>拆赛题</h3><p>把题目从一段文字变成可执行的任务清单，先明确"系统必须完成什么"。</p><ul><li>输入、输出与限制条件</li><li>评分指标与验收方法</li><li>功能流程图和时间表</li></ul><div class="project-output">交付：需求清单 + 方案草图</div></article>
+          <article class="project-step"><span class="project-step-no">02 / DESIGN</span><h3>定方案</h3><p>比较不同实现路径，确定主控、传感器、执行器、通信方式和成本边界。</p><ul><li>模块划分与接口定义</li><li>器件选型与风险评估</li><li>软硬件分工与备选方案</li></ul><div class="project-output">交付：系统框图 + BOM</div></article>
+          <article class="project-step"><span class="project-step-no">03 / BUILD</span><h3>做硬件</h3><p>将方案落成原理图、PCB 和样机，先让每个模块独立工作，再组合成系统。</p><ul><li>电源、接口与信号链路</li><li>嘉立创 PCB 打样与焊接</li><li>万用表、示波器和基础测试</li></ul><div class="project-output">交付：样机 + 硬件测试记录</div></article>
+          <article class="project-step"><span class="project-step-no">04 / DEVELOP</span><h3>写软件与算法</h3><p>让系统完成采集、通信、控制和显示，必要时加入滤波、识别或智能算法。</p><ul><li>C / C++、驱动与状态机</li><li>传感器数据处理</li><li>控制算法、视觉或边缘 AI</li></ul><div class="project-output">交付：可运行程序 + 测试用例</div></article>
+          <article class="project-step"><span class="project-step-no">05 / DELIVER</span><h3>联调答辩</h3><p>在真实条件下验证指标，记录故障和改进过程，最后把结果讲清楚、演示出来。</p><ul><li>压力测试与故障复现</li><li>性能数据与版本对比</li><li>报告、视频与现场答辩</li></ul><div class="project-output">交付：完整作品 + 技术文档</div></article>
+        </div>
+        <div class="chapter-intro" style="margin-top:24px"><div class="chapter-intro-item"><strong>新生怎么加入</strong><span>先选一个小模块，例如传感器采集、PCB 焊接、测试记录或答辩文档。</span></div><div class="chapter-intro-item"><strong>团队怎么协作</strong><span>硬件、软件、算法和项目管理按接口协同，每个人都有可验收的任务。</span></div><div class="chapter-intro-item"><strong>最后留下什么</strong><span>代码、原理图、测试数据和复盘文档，组成一份真正可展示的作品集。</span></div></div>
+      </section>
+
+      <section class="screen" data-screen-panel="5">
+        <div class="eyebrow">Chapter 05 · Career Sharing</div>
+        <h2>就业方向怎么选：<br><mark style="background: var(--yellow); padding: 0 .08em;">大二就要开始准备。</mark></h2>
+        <p class="lead">以下内容整理自《星期二经验分享》就业部分：先分清微控与工控，再准备校招渠道、简历、四级和实习机会。</p>
+
+        <div class="section-head"><div><div class="eyebrow">Employment Route</div><h3>01 · 就业专题</h3></div><p>方向、渠道、简历与行动</p></div>
+        <div class="club-grid" style="margin-top:24px">
+          <article class="club-card"><div class="club-top"><div class="club-symbol">M</div><span class="club-code">MICROCOMPUTER</span></div><h3>微控 / 嵌入式</h3><p>以产品研发为主，适合硬件、软件、测试和 PCB 方向。薪资成长更好，五年后基本过万；但项目周期长、加班多、压力大，存在 35 岁中年危机，必须早做课程和项目积累。</p><div class="club-links"><span>C 语言</span><span>单片机</span><span>模电数电</span><span>电力电子</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--blue);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">核心课程</strong>C 语言程序设计、电路原理、模拟电子技术、数字电子技术、信号分析处理、单片机原理、电力电子技术</div></article>
+          <article class="club-card"><div class="club-top"><div class="club-symbol">A</div><span class="club-code">AUTOMATION</span></div><h3>工控 / PLC</h3><p>入门门槛低、就业面广、国企岗位多。优势是稳定和实操快；挑战是常年驻项目现场、车间倒班、出差频繁，生活体验感一般。</p><div class="club-links"><span>电气控制</span><span>PLC</span><span>自控原理</span><span>电机拖动</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--yellow);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">核心课程</strong>电气控制及 PLC、自动控制原理、现代控制理论、电机及拖动基础</div></article>
+          <article class="club-card"><div class="club-top"><div class="club-symbol">R</div><span class="club-code">RESEARCH</span></div><h3>研发中厂机会</h3><p>嵌入式研发岗位少但价值高。CVTE 视源股份和华勤技术对自动化背景较友好，优先争取实习，再用实习撬动校招。</p><div class="club-links"><span>视源股份</span><span>华勤技术</span><span>暑期实习</span></div></article>
+        </div>
+
+        <div class="year-route">
+          <article class="year-route-card">
+            <div class="year-route-head"><span class="year-route-no">JOB 01</span><span class="year-route-phase">招聘渠道</span></div>
+            <h3>先建立信息入口</h3>
+            <p class="year-route-goal">不要等到大四才打开招聘软件。校招信息会集中在固定渠道里，越早关注越能判断节奏。</p>
+            <ul class="year-route-list"><li>BOSS 直聘等求职 APP</li><li>年级群与辅导员通知</li><li>广西科技大学就业信息网</li></ul>
+          </article>
+          <article class="year-route-card">
+            <div class="year-route-head"><span class="year-route-no">JOB 02</span><span class="year-route-phase">央国企逻辑</span></div>
+            <h3>理解福利与稳定</h3>
+            <p class="year-route-goal">很多同学倾向央国企，核心不只是"稳定"，还要看保险、公积金、年金、晋升周期和工作地点是否匹配自己。</p>
+            <ul class="year-route-list"><li>五险一金 / 六险二金</li><li>13 薪或 14 薪属于年终福利</li><li>公积金要看双边合计</li></ul>
+          </article>
+          <article class="year-route-card">
+            <div class="year-route-head"><span class="year-route-no">JOB 03</span><span class="year-route-phase">求职材料</span></div>
+            <h3>简历就是第一道门</h3>
+            <p class="year-route-goal">企业先看简历，再看面试表现。GPA、四级和项目经历是基础盘；竞赛和党员身份是加分项。</p>
+            <ul class="year-route-list"><li>GPA + 四级</li><li>四级 + 项目经历</li><li>千万不要挂科</li></ul>
+          </article>
+        </div>
+
+        <div class="section-head" style="margin-top:28px"><div><div class="eyebrow">Company Cases</div><h3>03 · 具体企业案例</h3></div><p>历届优秀毕业生的实际去向与待遇</p></div>
+        <div class="club-grid" style="margin-top:24px">
+          <article class="club-card"><div class="club-top"><div class="club-symbol">钢</div><span class="club-code">LIUGANG / STEEL</span></div><h3>柳钢集团</h3><p>自动化同学一般为 F 类制造类技术人员，属于一线员工，在防城港工作，主要从事设备运维方面。</p><div class="club-links"><span>防城港</span><span>设备运维</span><span>F类技术员</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--red);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">待遇详情</strong>实习期 6 个月，工资 5000（没过四级扣 500），公积金 10%~12%。6 个月军训→轮岗→定岗。工作 3 年后年收入可达税前 13–15 万元，每 3 年可参与一次晋升评选。防城港住宿良好，单人间。本届自动化共有 9 位同学获得 offer。</div></article>
+          <article class="club-card"><div class="club-top"><div class="club-symbol">核</div><span class="club-code">CGN / NEW ENERGY</span></div><h3>中广核新能源广西公司</h3><p>主要从事风电新能源业务，自动化同学一般从事运维检修岗。工作地点覆盖多个城市，可选择离家近的岗位。</p><div class="club-links"><span>风电新能源</span><span>运维检修</span><span>山里工作</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--green);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">待遇详情</strong>第一年税前年薪 10 万，公积金 12%，3 年一次晋升机会。公司覆盖多个地方，基本上自动化同学都能选择在自己的城市或相近城市工作。但工作环境基本都在山里，业务繁忙，过年不一定能回家。</div></article>
+          <article class="club-card"><div class="club-top"><div class="club-symbol">研</div><span class="club-code">EMBEDDED R&D</span></div><h3>嵌入式研发方向</h3><p>在从事嵌入式研发类，自动化的学生会有些捉襟见肘，每一年能从事这一行业的人不超过 3 个，而且基本都是实验室成员。</p><div class="club-links"><span>无人机方向</span><span>消费电子</span><span>实验室优先</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--blue);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">实际薪资</strong>无人机方向税前月薪过万；消费类电子方向年薪可达税前 14 万。在大公司工作的比较少，推荐 CVTE 视源股份和华勤技术，不卡科技大背景，对自动化背景较友好。</div></article>
+        </div>
+
+        <div class="section-head" style="margin-top:28px"><div><div class="eyebrow">Key Action</div><h3>02 · 现在就要做的事</h3></div><p>大二下学期最关键</p></div>
+        <div class="timeline">
+          <div class="year"><span class="year-no">选择</span><h3>确定体制内外倾向</h3><p>走体制内还是体制外，最好在大二形成初步答案，大三用一年时间去验证和补齐能力。</p><ul><li>微控路线：课程 + 项目</li><li>工控路线：抓住 PLC 课程</li><li>考研路线：先定专业与梯度</li></ul></div>
+          <div class="year"><span class="year-no">四级</span><h3>必须尽快拿下</h3><p>四级不是加分项，而是很多校招和研发岗的基础门槛。没过四级，很多机会会在简历阶段被直接筛掉。</p><ul><li>每天固定词汇量</li><li>真题反复训练</li><li>不要拖到大四</li></ul></div>
+          <div class="year"><span class="year-no">作品</span><h3>把经历变成证据</h3><p>证书、代码、测试数据、复盘记录都要保留下来。最终能说服企业的，是你能讲清楚的完整项目结果。</p><ul><li>项目 README</li><li>演示视频或照片</li><li>量化成果</li></ul></div>
+          <div class="year"><span class="year-no">复盘</span><h3>每学期一次决策</h3><p>根据成绩、项目、竞赛和家庭情况调整路线。不要只听别人的选择，要形成自己的冲稳保方案。</p><ul><li>更新简历</li><li>更新目标院校或岗位</li><li>找老师和企业前辈确认</li></ul></div>
+        </div>
+
+        <div class="chapter-intro" style="margin-top:24px">
+          <div class="chapter-intro-item" style="border-left-color:var(--red)"><strong>求职着装要求</strong><span>不能穿拖鞋、短裤、短裙、染发、五颜六色的衣服和比较凉爽的衣服。男生注意刮胡子、头发不要遮眉毛；女生可化淡妆、头发扎起来。建议购买白衬衣或白色 POLO 衫，搭配黑色直筒裤或与白色相搭的深色裤装。裤子长度不要盖住整个脚后跟。</span></div>
+          <div class="chapter-intro-item" style="border-left-color:var(--yellow)"><strong>简历与核心竞争力</strong><span>简历是展现给企业的"颜值"。GPA、四级和项目经历是基础盘；竞赛成绩和党员身份是加分项。千万不要挂科！</span></div>
+          <div class="chapter-intro-item" style="border-left-color:var(--green)"><strong>抓住大二关键期</strong><span>每个专业大二都会有人获得"大满贯"。走体制内还是体制外，最好在大二形成初步答案，大三用一年时间去验证和补齐能力。</span></div>
+        </div>
+
+        <figure class="share-figure">
+          <img src="asset/pic/share/share-direction.jpg" alt="自动化专业就业方向示意图">
+          <figcaption>PPT 配图：微型计算机控制与工业控制方向示意。</figcaption>
+        </figure>
+      </section>
+
+      <section class="screen" data-screen-panel="6">
+        <div class="eyebrow">Chapter 06 · postgraduate route</div>
+        <h2>考研与升学：<br><mark style="background: var(--yellow); padding: 0 .08em;">目标应是稳上岸。</mark></h2>
+        <p class="lead">以下内容整理自《就业考研经验分享》。2024 级对应"28 考研"，预计时间为 2027 年 12 月 18—19 日。自动化常见方向是学硕 <strong>081100 控制科学与工程</strong> 和专硕 <strong>085406 控制工程</strong>。</p>
+
+        <div class="section-head"><div><div class="eyebrow">Postgraduate Basics</div><h3>01 · 基础规则</h3></div><p>先认识考试，再选择路线</p></div>
+        <div class="timeline">
+          <div class="year"><span class="year-no">学硕</span><h3>偏理论与研究</h3><p>通常三年，注重学术研究和理论深度，可直博，但论文标准更高。学费一般 8000 元/年。</p><ul><li>政治 / 英语一（6000 词，5500 考纲 + 1000 超纲）</li><li>数学一（高数 + 线代 + 概率论）/ 自控</li><li>毕业压力大，论文标准高于专硕</li></ul></div>
+          <div class="year"><span class="year-no">专硕</span><h3>偏实践与上岸</h3><p>通常二到三年，重实践，备考压力相对小，学费 10000 元起；但竞争人数更多，部分强校仍考英一数一。</p><ul><li>政治 / 英语二（5500 词，全部为考纲词汇，难度比英一小）</li><li>数学二（高数 + 线代，高数不需要学完）/ 专业课</li><li>考博，适合目标为上岸的同学</li></ul></div>
+          <div class="year"><span class="year-no">时间</span><h3>四科连续完成</h3><p>第一天上午政治、下午英语；第二天上午数学、下午专业课。提前按真实时间做套卷训练。考研时间跟在四六级后面，四六级在 12 月第 2 个周末，考研在 12 月第 3 个周末。</p><ul><li>第一天：政治 8:30–11:30，英语 14:00–17:00</li><li>第二天：数学 8:30–11:30，专业课 14:00–17:00</li><li>重视专业课信息差</li></ul></div>
+          <div class="year"><span class="year-no">竞争</span><h3>不要低估对手</h3><p>控制工程不只和自动化竞争。自动化属于工科，但农学、理学、甚至文科都要来考控制工程——自控涉及数学比较多容易上手，对手远远不止自动化类。</p><ul><li>自动化类（机器人工程、轨道交通信号与控制）</li><li>电气 / 电子信息 / 测控</li><li>农学 / 理学 / 文科跨考</li></ul></div>
+        </div>
+
+        <div class="chapter-intro" style="margin-top:24px">
+          <div class="chapter-intro-item" style="border-left-color:var(--blue)"><strong>学硕 vs 专硕核心差异</strong><span>学硕学费约 8000 元/年，可直博，论文标准更高；专硕学费 10000 元起，考博，毕业难度较小。英语一需掌握 6000 词（含 1000 超纲），英语二需掌握 5500 词（全部考纲）。数学一含高数+线代+概率论，数学二仅高数+线代且高数不需学完。</span></div>
+          <div class="chapter-intro-item" style="border-left-color:var(--yellow)"><strong>录取现实</strong><span>2025 年广西科技大学共有 381 人考取硕士研究生（55 人"双一流"，43 人国外高校）。2026 年自动化学院毕业生 325 人，考研上岸仅 29 人，落实去向约 9%，但已是创新高。目标应为上岸，而非名校情结。</span></div>
+          <div class="chapter-intro-item" style="border-left-color:var(--green)"><strong>考研不能脱离自身背景</strong><span>高考分数、大学成绩、竞赛成绩以及地区情况都会影响结果。考研不是完全公平的考试，"赌博"成分大。抛掉自身条件不谈，上岸概率跌一半。</span></div>
+        </div>
+
+        <div class="section-head" style="margin-top:28px"><div><div class="eyebrow">School Recommendations</div><h3>02 · 冲稳保推荐</h3></div><p>按上岸难度设置梯度，结合历年上岸情况与今年考试情况</p></div>
+        <div class="club-grid">
+          <article class="club-card"><div class="club-top"><div class="club-symbol">冲</div><span class="club-code">HIGH TARGET</span></div><h3>重庆邮电大学</h3><p>控制工程 085406；政治、英二、数二、自控（不含现控）。初试复试 5:5，学科评估 B-。2026 复试线 330，难度高。</p><div class="club-links"><span>B-</span><span>GPA 靠前</span><span>项目经历强</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--red);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">适合人群</strong>GPA 在专业前列、通过英语四级、项目经历丰富、自律能力较强的同学。<strong style="display:block;margin-top:4px">工作去向</strong>华为、小米、腾讯、三大运营商等。</div></article>
+          <article class="club-card"><div class="club-top"><div class="club-symbol">稳</div><span class="club-code">BALANCED</span></div><h3>桂林电子科技大学南宁研究院</h3><p>控制工程 085406；政治、英二、数二、电子技术综合（模电 + 数电）。初试复试 5:5。2026 复试线 254，难度中等偏下。</p><div class="club-links"><span>四级通过</span><span>项目经历丰富</span><span>自律能力一般</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--yellow);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">适合人群</strong>通过英语四级、项目经历丰富、自律能力一般的同学。<strong style="display:block;margin-top:4px">工作去向</strong>华为、珠三角地区、三大运营商等。</div></article>
+          <article class="club-card"><div class="club-top"><div class="club-symbol">保</div><span class="club-code">SAFETY</span></div><h3>广西科技大学</h3><p>控制工程 085406；政治、英二、数二、自控（不含现控）。初试复试 5:5。2026 复试线 254，上岸难度较低，保护本校。</p><div class="club-links"><span>柳钢 / 禾望电气</span><span>高职高专院校</span><span>适合继续深造但不内卷</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--green);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">适合人群</strong>想继续深造但不用这么卷的同学，保护本校。<strong style="display:block;margin-top:4px">工作去向</strong>柳钢、禾望电气、高职高专院校等。</div></article>
+        </div>
+
+        <div class="section-head" style="margin-top:28px"><div><div class="eyebrow">Decision Route</div><h3>03 · 准备节奏</h3></div><p>把升学放进四年规划</p></div>
+        <div class="timeline">
+          <div class="year"><span class="year-no">大一—大二</span><h3>先打基础</h3><p>不要一开始只盯着考试，先把数学、英语、专业基础和项目能力建立起来。</p><ul><li>高数与线代</li><li>电路与控制</li><li>C / C++ 与 Linux</li></ul></div>
+          <div class="year"><span class="year-no">大三</span><h3>确定方向</h3><p>结合项目、竞赛和兴趣，选择控制科学、电子信息、机械、计算机或电气等相关方向。</p><ul><li>收集院校信息</li><li>联系科研方向</li><li>形成目标梯度</li></ul></div>
+          <div class="year"><span class="year-no">大四</span><h3>冲刺与选择</h3><p>考研、就业和保研并不互相排斥，保留项目作品集，给自己准备多条可行路径。</p><ul><li>复习计划</li><li>专业课准备</li><li>就业备选方案</li></ul></div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen-panel="7">
+        <div class="eyebrow">Chapter 07 · choose your route</div>
+        <h2>现在，生成你的第一张路线图。</h2>
+        <p class="lead">选择你更感兴趣的事情。结果不是测试答案，而是一条可以从大一开始执行的建议。</p>
+        <div class="route-layout">
+          <div class="route-panel">
+            <h3>30题路线测评</h3>
+            <div class="quiz-progress" id="quizProgress"></div>
+            <div id="routeQuiz"></div>
+            <div class="quiz-nav">
+              <button class="tool-btn" id="quizPrev" type="button">上一题</button>
+              <button class="tool-btn primary" id="quizNext" type="button">下一题 →</button>
+            </div>
+            <button class="tool-btn primary" id="generateBtn" type="button" hidden style="width:100%;margin-top:10px">生成我的路线</button>
+          </div>
+          <div class="route-output" id="routeOutput"></div>
+        </div>
+      </section>
+
+      <div class="footer-nav">
+        <button class="nav-btn" id="prevBtn">← 上一章</button>
+        <span style="align-self:center;color:var(--muted);font-size:11px" id="progressLabel">01 / 08</span>
+        <button class="nav-btn next" id="nextBtn">下一章 →</button>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <button class="close modal-close" id="closeModal" aria-label="关闭">×</button>
+      <div class="role-view" id="roleView" hidden>
+        <div class="role-view-body">
+          <h3 id="roleTitle"></h3>
+          <p class="role-view-desc" id="roleDesc"></p>
+          <p class="role-view-summary" id="roleSummary"></p>
+          <div class="role-view-tags" id="roleTags"></div>
+          <div class="role-view-meta" id="roleMeta"></div>
+          <ul class="role-view-detail" id="roleDetail"></ul>
+        </div>
+      </div>
+      <div id="modalGeneric" hidden>
+        <h3 id="modalTitle"></h3>
+        <p id="modalDescription"></p>
+        <div class="modal-meta" id="modalMeta"></div>
+        <div class="modal-section" id="modalWorkSection"><span class="modal-label" id="modalWorkLabel">核心工作</span><p id="modalWork"></p></div>
+        <div class="modal-section" id="modalFitSection"><span class="modal-label" id="modalFitLabel">适合人群</span><p id="modalFit"></p></div>
+        <div class="modal-section" id="modalStartSection"><span class="modal-label" id="modalStartLabel">入门路径</span><p id="modalStart"></p></div>
+        <div class="modal-section" id="modalListSection"><span class="modal-label" id="modalListLabel">你会练什么</span><ul class="modal-list" id="modalList"></ul></div>
+        <div class="modal-section" id="modalExtraSection"><span class="modal-label" id="modalExtraLabel">典型任务与成长方向</span><ul class="modal-list" id="modalExtraList"></ul></div>
+        <div class="modal-section club-extra-content" id="clubExtraContent" hidden></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="image-viewer" id="imageViewer" hidden role="dialog" aria-modal="true" aria-labelledby="imageViewerTitle">
+    <div class="image-viewer-backdrop" data-viewer-close></div>
+    <div class="image-viewer-stage">
+      <button class="image-viewer-nav prev" id="galleryPrev" type="button" aria-label="上一张">‹</button>
+      <div class="image-viewer-frame">
+        <button class="image-viewer-close" id="galleryClose" type="button" aria-label="关闭图片预览">×</button>
+        <div class="image-viewer-art" id="imageViewerArt"><img class="image-viewer-image" id="imageViewerImage" alt=""></div>
+        <div class="image-viewer-caption"><strong id="imageViewerTitle">图片预览</strong><span id="imageViewerCount">01 / 01</span></div>
+      </div>
+      <button class="image-viewer-nav next" id="galleryNext" type="button" aria-label="下一张">›</button>
+    </div>
+  </div>
+
+  <script>
+    const roles = [
+      { name: '嵌入式软件工程师', group: 'software', desc: '编写单片机、传感器和执行器的控制程序。', tags: ['C / C++', 'MCU', 'RTOS'], detail: ['把硬件变成可运行的设备功能。', '适合从 C 语言、单片机和通信协议开始。'], salary: '8K – 25K', companies: '华为、小米、大疆、CVTE、汇川技术', growth: '初级 → 中级（3年）→ 高级/架构师（5-8年）→ 技术专家/项目经理' },
+      { name: '嵌入式 Linux 工程师', group: 'software', desc: '开发 Linux 设备上的驱动、应用和系统功能。', tags: ['Linux', '驱动', 'Shell'], detail: ['连接底层硬件与上层应用。', '适合学习 C、Linux、交叉编译和设备树。'], salary: '12K – 30K', companies: '华为、瑞芯微、全志、中移物联、翱捷科技', growth: '初级 → 中级（2-3年）→ 高级/系统架构师（5-8年）→ 技术总监/开源贡献者' },
+      { name: '机器人嵌入式工程师', group: 'software', desc: '负责机器人主控、传感器通信和执行器控制。', tags: ['C++', 'CAN', 'ROS'], detail: ['让机器人各个模块可靠协同。', '需要同时理解嵌入式、通信和机器人系统。'], salary: '10K – 28K', companies: '大疆、宇树、库犸、优必选、埃斯顿', growth: '初级 → 中级（3年）→ 高级/ROS架构师（5-8年）→ 技术负责人/创业' },
+      { name: '物联网工程师', group: 'software', desc: '让设备采集数据、连接网络并与平台通信。', tags: ['MQTT', 'TCP/IP', '云平台'], detail: ['完成设备端、网络和平台之间的数据链路。', '适合学习 MCU、网络协议和基础后端。'], salary: '8K – 22K', companies: '小米、阿里云、腾讯云、海尔智家、涂鸦智能', growth: '初级 → 中级（2-3年）→ 高级/解决方案架构师（5-7年）→ IoT产品总监' },
+      { name: '嵌入式硬件工程师', group: 'control', desc: '设计电路板、接口、电源和传感器信号链路。', tags: ['原理图', 'PCB', '示波器'], detail: ['把系统需求落实成稳定的电路和板卡。', '需要掌握模电、数电、PCB 和仪器使用。'], salary: '9K – 24K', companies: '华为、中兴、OPPO、vivo、立创商城', growth: '初级 → 中级（3年）→ 高级/硬件架构师（5-8年）→ 硬件总监/技术合伙人' },
+      { name: '硬件测试工程师', group: 'control', desc: '验证板卡和整机功能，定位异常并推动改进。', tags: ['测试', '定位', '可靠性'], detail: ['让设备从"能工作"变成"稳定工作"。', '适合喜欢观察、验证和解决工程问题的同学。'], salary: '7K – 20K', companies: '华为、小米、比亚迪、TCL华星、富士康', growth: '初级 → 中级（2-3年）→ 高级/测试架构师（5-7年）→ 质量总监/可靠性专家' },
+      { name: 'PLC 工程师', group: 'control', desc: '编写工业控制程序并调试生产线设备。', tags: ['PLC', '梯形图', '工业通信'], detail: ['控制工业现场的设备、产线和执行机构。', '需要理解 PLC、变频器、触摸屏和工业网络。'], salary: '6K – 18K', companies: '汇川技术、信捷电气、西门子、三菱、ABB', growth: '初级 → 中级（2-3年）→ 高级/自动化系统工程师（5-8年）→ 项目总监/技术顾问' },
+      { name: '自动化工程师', group: 'control', desc: '负责自动化设备、传感器和整套控制系统。', tags: ['产线', '控制系统', '调试'], detail: ['把多个设备和控制模块组成完整系统。', '工作中需要软硬件结合与现场协作能力。'], salary: '7K – 20K', companies: '汇川技术、中控技术、新松机器人、埃斯顿、宝信软件', growth: '初级 → 中级（3年）→ 高级/系统架构师（5-8年）→ 技术总监/自主创业' },
+      { name: '电力电子工程师', group: 'control', desc: '设计电源、逆变器、变换器和功率控制系统。', tags: ['功率器件', 'PWM', '电源'], detail: ['关注能量如何变换、传输和高效控制。', '适合对电路、器件和能源设备感兴趣的同学。'], salary: '10K – 28K', companies: '阳光电源、华为数字能源、比亚迪、宁德时代、台达', growth: '初级 → 中级（3年）→ 高级/功率专家（5-8年）→ 技术总监/产品线负责人' },
+      { name: '电机控制工程师', group: 'control', desc: '控制电机的速度、位置和转矩。', tags: ['FOC', 'PID', 'DSP'], detail: ['让电机按目标平稳、精准地运动。', '需要结合电机原理、控制算法和嵌入式实现。'], salary: '9K – 26K', companies: '汇川技术、比亚迪、上海电驱动、精进电动、方正电机', growth: '初级 → 中级（2-3年）→ 高级/控制算法专家（5-8年）→ 技术负责人/专利发明人' },
+      { name: '机器人控制工程师', group: 'robot', desc: '开发机器人的运动、导航和整机控制逻辑。', tags: ['运动学', '控制算法', 'ROS'], detail: ['把机器人要完成的动作变成可执行的控制策略。', '适合喜欢数学、系统和整机调试的同学。'], salary: '12K – 32K', companies: '大疆、宇树、优必选、库犸、新松机器人', growth: '初级 → 中级（3年）→ 高级/运动控制专家（5-8年）→ 技术总监/机器人公司创始人' },
+      { name: '机器视觉工程师', group: 'robot', desc: '让机器通过相机识别目标、位置和环境。', tags: ['OpenCV', '识别', '定位'], detail: ['从图像中提取机器可以使用的信息。', '可以从 Python、OpenCV 和基础图像处理开始。'], salary: '12K – 35K', companies: '大疆、海康威视、商汤、旷视、地平线', growth: '初级 → 中级（2-3年）→ 高级/AI视觉专家（5-7年）→ 技术总监/AI产品负责人' },
+      { name: '飞控工程师', group: 'robot', desc: '负责无人机姿态、导航和飞行稳定性控制。', tags: ['姿态', '导航', '传感器融合'], detail: ['让飞行器在复杂环境中保持稳定并完成任务。', '需要学习控制理论、IMU、嵌入式和飞控系统。'], salary: '12K – 30K', companies: '大疆、极飞、纵横、亿航、鸿翼智能', growth: '初级 → 中级（2-3年）→ 高级/飞控架构师（5-8年）→ 技术总监/飞控产品负责人' }
+    ];
+
+    const roleProfiles = {
+      '嵌入式软件工程师': { work: '在单片机上编写实时程序，读取传感器、驱动电机，并处理通信和异常状态。', fit: '喜欢把抽象逻辑变成稳定功能，愿意耐心调试时序、内存和硬件接口。', start: 'C 语言 → GPIO / 定时器 → STM32 → RTOS；先完成一个传感器采集或电机控制小项目。' },
+      '嵌入式 Linux 工程师': { work: '为设备构建 Linux 系统、驱动和应用，让板卡能启动、联网并稳定运行。', fit: '对操作系统、命令行和底层软硬件边界感兴趣，愿意阅读日志和源码。', start: 'C 语言 → Linux 命令行 → 交叉编译 → 驱动 / 设备树；从单板机驱动一个外设开始。' },
+      '机器人嵌入式工程师': { work: '连接机器人的主控、传感器、执行器和总线，让各个模块按统一协议协同工作。', fit: '喜欢整机系统，能在代码、通信和现场调试之间切换。', start: 'C++ → CAN / 串口 → 传感器与执行器 → ROS 2；从一个底盘或机械臂子系统开始。' },
+      '物联网工程师': { work: '设计设备到云端的数据链路，处理采集、上报、远程控制和设备状态。', fit: '对网络、数据和真实设备连接感兴趣，愿意同时理解前后端与嵌入式。', start: 'MCU → TCP / MQTT → 数据库与可视化；完成一个温湿度采集和远程看板。' },
+      '嵌入式硬件工程师': { work: '完成原理图、PCB、电源和接口设计，并用仪器验证信号质量与整机稳定性。', fit: '喜欢动手测量和定位电路问题，对器件、电源和信号完整性有耐心。', start: '模电 / 数电 → 原理图 → PCB → 示波器；从一块传感器扩展板打样开始。' },
+      '硬件测试工程师': { work: '制定测试用例，复现和定位板卡、固件及整机异常，推动问题闭环。', fit: '观察细致、逻辑清晰，享受把"偶发问题"变成可复现证据。', start: '测试方法 → 仪器使用 → 自动化脚本 → 可靠性验证；建立一份完整的硬件测试报告。' },
+      'PLC 工程师': { work: '编写 PLC 程序，配置变频器、触摸屏和工业网络，调试生产线的顺序与安全逻辑。', fit: '喜欢现场设备和确定性控制，能接受出差、联调和与多工种协作。', start: '数字逻辑 → PLC 梯形图 → HMI → 工业通信；先做一套输送带启停控制。' },
+      '自动化工程师': { work: '把传感器、执行机构、控制器和上位机整合成可交付的自动化系统。', fit: '擅长拆解复杂现场问题，愿意在软件、硬件和机械之间沟通。', start: 'PLC / 电气图 → 控制柜 → 现场总线 → 系统调试；从一个小型工站开始。' },
+      '电力电子工程师': { work: '设计电源、逆变器和功率变换电路，关注效率、热管理和保护策略。', fit: '对能量转换和器件特性着迷，愿意深入电路分析与实验验证。', start: '电路基础 → 功率器件 → PWM → 磁性元件与热设计；先完成一个 DC-DC 电源。' },
+      '电机控制工程师': { work: '建立电机模型并实现速度、位置和转矩控制，让运动系统平稳、快速、精准。', fit: '喜欢数学模型、波形和运动效果，愿意反复调参和做实验。', start: '控制理论 → PID → 编码器 → FOC / DSP；从直流电机闭环控制开始。' },
+      '机器人控制工程师': { work: '负责机器人的运动学、轨迹规划、导航和整机状态机，把任务转成可靠动作。', fit: '喜欢系统思考和整机调试，愿意用数学解释运动和误差。', start: '线代 / 控制 → 运动学 → ROS 2 → 规划与状态机；先让移动底盘完成一条轨迹。' },
+      '机器视觉工程师': { work: '从相机图像中识别目标、位置和缺陷，并把结果交给控制系统执行。', fit: '对图像、几何和实验验证感兴趣，愿意处理数据和光照等不确定性。', start: 'Python → OpenCV → 相机标定 → 深度学习；先做颜色或形状识别项目。' },
+      '飞控工程师': { work: '融合 IMU、GPS 和气压计等数据，设计无人机姿态、导航和任务控制。', fit: '喜欢飞行器、控制和传感器融合，能在仿真与实飞测试中保持严谨。', start: '控制理论 → IMU → 姿态解算 → PX4 / ArduPilot；从仿真调参再进入实机。' }
+    };
+
+    const roleInsights = {
+      '嵌入式软件工程师': ['日常任务：驱动 GPIO、定时器、串口、传感器和执行器，处理实时性、功耗与异常。', '典型产出：可烧录固件、接口文档、测试日志和版本记录。', '协作对象：硬件工程师、测试工程师、控制算法工程师。', '成长方向：RTOS、机器人嵌入式、汽车电子、IoT 设备与边缘 AI。'],
+      '嵌入式 Linux 工程师': ['日常任务：构建系统、编写驱动、配置设备树，解决启动、联网和外设兼容问题。', '典型产出：Linux 镜像、驱动模块、部署脚本和故障分析报告。', '协作对象：硬件、应用软件、云平台和测试团队。', '成长方向：Linux BSP、系统软件、边缘计算和国产芯片适配。'],
+      '机器人嵌入式工程师': ['日常任务：连接主控、传感器、执行器和 CAN/串口总线，维护机器人状态机。', '典型产出：底层控制固件、通信协议、标定工具和联调记录。', '协作对象：机械、控制、视觉和整机测试团队。', '成长方向：机器人平台、移动底盘、机械臂和智能装备。'],
+      '物联网工程师': ['日常任务：完成设备采集、联网、远程控制、数据上报和设备状态管理。', '典型产出：设备端程序、MQTT/TCP 服务、数据看板和告警规则。', '协作对象：嵌入式、后端、云平台和产品团队。', '成长方向：工业物联网、边缘网关、云边协同和智能设备平台。'],
+      '嵌入式硬件工程师': ['日常任务：做器件选型、原理图、PCB、电源和接口设计，并验证信号质量。', '典型产出：BOM、原理图、PCB 文件、样机和硬件测试报告。', '协作对象：嵌入式软件、结构、电源和供应链团队。', '成长方向：高速硬件、电源设计、射频、汽车电子和产品研发。'],
+      '硬件测试工程师': ['日常任务：设计测试用例，复现偶发问题，定位板卡、固件和整机故障。', '典型产出：测试计划、缺陷单、自动化脚本、可靠性和回归报告。', '协作对象：硬件、固件、生产和质量团队。', '成长方向：自动化测试、可靠性工程、认证测试和质量管理。'],
+      'PLC 工程师': ['日常任务：编写梯形图和结构化文本，配置 HMI、变频器与工业网络。', '典型产出：PLC 程序、电气控制逻辑、I/O 表和现场调试记录。', '协作对象：电气设计、机械、工艺和生产现场团队。', '成长方向：工业控制、运动控制、产线数字化和智能制造。'],
+      '自动化工程师': ['日常任务：把传感器、执行机构、控制器和上位机整合成完整工站。', '典型产出：控制方案、电气图、调试流程、设备参数和交付文档。', '协作对象：机械、电气、软件、工艺和客户现场团队。', '成长方向：自动化系统集成、智能工厂、机器人产线和项目管理。'],
+      '电力电子工程师': ['日常任务：设计 DC-DC、逆变器和功率变换电路，处理效率、热和保护问题。', '典型产出：拓扑方案、仿真波形、功率板卡、测试数据和安全保护策略。', '协作对象：硬件、控制、结构散热和认证团队。', '成长方向：新能源、电源、电驱、储能和功率器件应用。'],
+      '电机控制工程师': ['日常任务：建立电机模型，实现速度、位置、转矩闭环并进行参数整定。', '典型产出：控制算法、驱动固件、标定工具、波形分析和性能报告。', '协作对象：电机、电源、机械和嵌入式团队。', '成长方向：伺服系统、机器人关节、电动车电驱和运动控制。'],
+      '机器人控制工程师': ['日常任务：处理运动学、轨迹规划、导航、状态机和整机动作策略。', '典型产出：控制节点、规划算法、仿真结果、动作参数和任务成功率报告。', '协作对象：机械、嵌入式、视觉和算法团队。', '成长方向：移动机器人、机械臂、无人系统和智能制造。'],
+      '机器视觉工程师': ['日常任务：采集和清洗图像，完成标定、检测、识别、定位并优化光照和误检。', '典型产出：数据集、视觉算法、推理程序、评测指标和部署模型。', '协作对象：算法、机械、控制、产品和现场工程团队。', '成长方向：工业检测、机器人视觉、自动驾驶和边缘 AI。'],
+      '飞控工程师': ['日常任务：融合 IMU、GPS、气压计等数据，完成姿态、导航和任务控制。', '典型产出：飞控参数、姿态解算、仿真日志、飞行测试报告和安全策略。', '协作对象：结构、嵌入式、导航、视觉和测试团队。', '成长方向：无人机、低空经济、航天器控制和自主飞行系统。']
+    };
+    const roleDeepDive = {
+      '嵌入式软件工程师': ['工作流程：读原理图 → 定义接口 → 编写驱动 → 台架测试 → 联机调试 → 发布固件。', '关键难点：中断时序、资源受限、并发、异常恢复和硬件差异。', '行业场景：智能家电、汽车电子、医疗设备、工业仪器和消费硬件。'],
+      '嵌入式 Linux 工程师': ['工作流程：选型 → 移植 Bootloader/Kernel → 配置设备树 → 编写驱动 → 制作镜像 → 量产维护。', '关键难点：启动链路、内核调试、交叉编译、驱动稳定性和版本兼容。', '行业场景：网关、摄像头、机器人主机、边缘服务器和国产芯片平台。'],
+      '机器人嵌入式工程师': ['工作流程：梳理总线 → 设计消息协议 → 实现底层节点 → 标定传感器 → 子系统联调 → 整机验证。', '关键难点：实时通信、同步误差、传感器异常、状态机和安全停机。', '行业场景：移动机器人、机械臂、AGV、服务机器人和智能装备。'],
+      '物联网工程师': ['工作流程：定义数据模型 → 开发设备端 → 接入网络 → 云端存储 → 监控告警 → 远程升级。', '关键难点：弱网、断线重连、设备身份、安全、海量连接和数据一致性。', '行业场景：智慧楼宇、工业监测、能源管理、农业物联网和智能终端。'],
+      '嵌入式硬件工程师': ['工作流程：需求拆分 → 器件选型 → 原理图 → PCB 布局布线 → 打样 → 测试 → 迭代。', '关键难点：电源完整性、EMC、散热、高速信号、器件替代和成本控制。', '行业场景：消费电子、无人机、机器人、通信设备和新能源产品。'],
+      '硬件测试工程师': ['工作流程：分析需求 → 制定用例 → 搭建环境 → 执行测试 → 复现缺陷 → 验证修复 → 发布报告。', '关键难点：边界条件、偶发故障、软硬件交叉问题、自动化覆盖率和回归效率。', '行业场景：电子产品、汽车零部件、工业控制器、通信设备和质量实验室。'],
+      'PLC 工程师': ['工作流程：读工艺流程 → 绘制 I/O 表 → 编写逻辑 → 配置 HMI/变频器 → 单机调试 → 现场交付。', '关键难点：安全互锁、时序逻辑、现场干扰、设备兼容和停机窗口有限。', '行业场景：包装、物流、能源、制造产线和设备集成商。'],
+      '自动化工程师': ['工作流程：现场调研 → 方案设计 → 设备选型 → 控制柜与程序 → 联机调试 → 验收维护。', '关键难点：多专业协作、现场变化、节拍优化、故障定位和交付管理。', '行业场景：智能工厂、仓储物流、汽车制造、食品医药和过程工业。'],
+      '电力电子工程师': ['工作流程：确定功率指标 → 选择拓扑 → 仿真 → 样机 → 热测试/EMI 测试 → 可靠性验证。', '关键难点：开关损耗、环路稳定、热设计、保护策略、器件应力和安全规范。', '行业场景：充电桩、光伏逆变、储能、电源模块、电动车和工业电源。'],
+      '电机控制工程师': ['工作流程：获取电机参数 → 建模 → 采样与驱动 → 闭环控制 → 参数辨识 → 工况测试。', '关键难点：采样噪声、延迟、弱磁、低速抖动、负载变化和保护逻辑。', '行业场景：伺服驱动、机器人关节、无人机、电动车和家电压缩机。'],
+      '机器人控制工程师': ['工作流程：建立运动模型 → 规划轨迹 → 编写控制节点 → 仿真 → 实机标定 → 任务验收。', '关键难点：模型误差、碰撞安全、实时性、定位漂移和复杂环境鲁棒性。', '行业场景：协作机器人、移动机器人、仓储 AGV、特种机器人和无人系统。'],
+      '机器视觉工程师': ['工作流程：定义缺陷/目标 → 采集数据 → 标注清洗 → 训练或设计算法 → 部署 → 现场调参。', '关键难点：光照变化、样本偏差、误检漏检、实时推理和边缘设备算力。', '行业场景：工业质检、智能交通、机器人定位、安防和医疗影像辅助。'],
+      '飞控工程师': ['工作流程：建立飞行动力学 → 传感器标定 → 姿态解算 → 控制律 → 仿真 → 系留/实飞测试。', '关键难点：传感器融合、抗风扰、失效保护、飞行安全和法规约束。', '行业场景：测绘无人机、巡检、物流配送、农业植保和低空智能交通。']
+    };
+
+    const screenTitles = ['成果开场', '职业地图', '社团与战队', '竞赛导航', '项目拆解', '四年路线', '考研与升学', '我的路线'];
+    let current = 0;
+    const panels = [...document.querySelectorAll('[data-screen-panel]')];
+    const chapters = [...document.querySelectorAll('.chapter')];
+    const crumbTitle = document.getElementById('crumbTitle');
+    const progressLabel = document.getElementById('progressLabel');
+    const appShell = document.querySelector('.app-shell');
+    const railToggle = document.getElementById('railToggle');
+
+    railToggle.addEventListener('click', () => {
+      const collapsed = appShell.classList.toggle('collapsed');
+      railToggle.setAttribute('aria-label', collapsed ? '展开侧栏' : '收回侧栏');
+      railToggle.setAttribute('title', collapsed ? '展开侧栏' : '收回侧栏');
+    });
+
+    function showScreen(index) {
+      current = Math.max(0, Math.min(index, panels.length - 1));
+      panels.forEach((panel, i) => panel.classList.toggle('active', i === current));
+      chapters.forEach((chapter, i) => chapter.classList.toggle('active', i === current));
+      crumbTitle.textContent = screenTitles[current];
+      progressLabel.textContent = `${String(current + 1).padStart(2, '0')} / ${String(panels.length).padStart(2, '0')}`;
+      document.getElementById('prevBtn').disabled = current === 0;
+      document.getElementById('nextBtn').disabled = current === panels.length - 1;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    showScreen(0);
+
+    const promoCanvas = document.getElementById('promoCanvas');
+    if (promoCanvas) { const promoCtx = promoCanvas.getContext('2d');
+    const promoNodes = Array.from({ length: 46 }, (_, index) => ({
+      seed: index * 1.73,
+      x: Math.random(),
+      y: Math.random(),
+      size: 1 + Math.random() * 2.8,
+      speed: .00025 + Math.random() * .00055,
+      tone: index % 5 === 0 ? '#e7f34b' : index % 3 === 0 ? '#4fa7ff' : '#101314'
+    }));
+    function resizePromoCanvas() {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      promoCanvas.width = Math.floor(window.innerWidth * ratio);
+      promoCanvas.height = Math.floor(window.innerHeight * ratio);
+      promoCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+    function drawPromo(time) {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const centerX = width * .72;
+      const centerY = height * .53;
+      const orbit = Math.min(width, height) * .25;
+      promoCtx.clearRect(0, 0, width, height);
+
+      promoCtx.save();
+      promoCtx.translate(centerX, centerY);
+      promoCtx.rotate(-.2);
+      for (let ring = 0; ring < 7; ring += 1) {
+        promoCtx.beginPath();
+        promoCtx.ellipse(0, 0, orbit + ring * 34, orbit * .47 + ring * 18, ring * .08, 0, Math.PI * 2);
+        promoCtx.strokeStyle = ring % 2 ? 'rgba(79,167,255,.48)' : 'rgba(16,19,20,.16)';
+        promoCtx.lineWidth = ring === 3 ? 2 : 1;
+        promoCtx.stroke();
+      }
+      promoCtx.restore();
+
+      promoCtx.beginPath();
+      promoCtx.moveTo(width * .52, height * .22);
+      promoCtx.lineTo(width * .95, height * .82);
+      promoCtx.strokeStyle = 'rgba(231,243,75,.85)';
+      promoCtx.lineWidth = 2;
+      promoCtx.stroke();
+
+      const points = promoNodes.map((node) => {
+        node.x += node.speed;
+        if (node.x > 1.08) node.x = -.08;
+        return { x: node.x * width, y: (node.y + Math.sin(time * .00045 + node.seed) * .035) * height, node };
+      });
+      for (let index = 0; index < points.length; index += 1) {
+        const point = points[index];
+        for (let other = index + 1; other < points.length; other += 1) {
+          const target = points[other];
+          const distance = Math.hypot(point.x - target.x, point.y - target.y);
+          if (distance < 112) {
+            promoCtx.beginPath();
+            promoCtx.moveTo(point.x, point.y);
+            promoCtx.lineTo(target.x, target.y);
+            promoCtx.strokeStyle = `rgba(79,167,255,${(1 - distance / 112) * .22})`;
+            promoCtx.lineWidth = 1;
+            promoCtx.stroke();
+          }
+        }
+        promoCtx.beginPath();
+        promoCtx.arc(point.x, point.y, point.node.size, 0, Math.PI * 2);
+        promoCtx.fillStyle = point.node.tone;
+        promoCtx.globalAlpha = .72;
+        promoCtx.fill();
+        promoCtx.globalAlpha = 1;
+      }
+
+      promoCtx.beginPath();
+      promoCtx.arc(centerX, centerY, 7 + Math.sin(time * .003) * 2, 0, Math.PI * 2);
+      promoCtx.fillStyle = '#ff5e56';
+      promoCtx.shadowColor = 'rgba(255,94,86,.7)';
+      promoCtx.shadowBlur = 22;
+      promoCtx.fill();
+      promoCtx.shadowBlur = 0;
+      requestAnimationFrame(drawPromo);
+    }
+    resizePromoCanvas();
+    window.addEventListener('resize', resizePromoCanvas);
+    requestAnimationFrame(drawPromo);
+    }
+
+    chapters.forEach((chapter) => chapter.addEventListener('click', () => showScreen(Number(chapter.dataset.screen))));
+    document.getElementById('prevBtn').addEventListener('click', () => showScreen(current - 1));
+    document.getElementById('nextBtn').addEventListener('click', () => showScreen(current + 1));
+    document.getElementById('nextTop').addEventListener('click', () => showScreen(current + 1));
+
+    const roleGrid = document.getElementById('roleGrid');
+    function renderRoles(filter = 'all') {
+      roleGrid.innerHTML = roles.map((role, index) => {
+        if (filter !== 'all' && role.group !== filter) return '';
+        return `<article class="role-card" data-group="${role.group}" data-role-index="${index}" tabindex="0"><span class="role-index">${String(index + 1).padStart(2, '0')}</span><h3>${role.name}</h3><p>${role.desc}</p><div class="tag-row">${role.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div><div class="role-salary">${role.salary}</div><div class="role-companies">${role.companies}</div></article>`;
+      }).join('');
+      document.querySelectorAll('.role-card').forEach((card) => {
+        card.addEventListener('click', () => openRole(Number(card.dataset.roleIndex)));
+        card.addEventListener('keydown', (event) => { if (event.key === 'Enter') openRole(Number(card.dataset.roleIndex)); });
+      });
+    }
+    renderRoles();
+    document.querySelectorAll('.filter').forEach((filter) => filter.addEventListener('click', () => {
+      document.querySelectorAll('.filter').forEach(item => item.classList.remove('active'));
+      filter.classList.add('active');
+      renderRoles(filter.dataset.filter);
+    }));
+
+    const backdrop = document.getElementById('modalBackdrop');
+    const roleView = document.getElementById('roleView');
+    const modalGeneric = document.getElementById('modalGeneric');
+    function openRole(index) {
+      const role = roles[index];
+      backdrop.setAttribute('aria-labelledby', 'roleTitle');
+      roleView.hidden = false;
+      modalGeneric.hidden = true;
+      document.getElementById('roleTitle').textContent = role.name;
+      document.getElementById('roleDesc').textContent = role.desc;
+      document.getElementById('roleSummary').textContent = `把"${role.desc.replace(/。$/, '')}"拆成一条可练习、可验证、能留下作品的工程路径。`;
+      document.getElementById('roleTags').innerHTML = role.tags.map(tag => `<span>${tag}</span>`).join('');
+      const metaEl = document.getElementById('roleMeta');
+      metaEl.innerHTML = `
+        <div class="role-view-meta-item"><strong>${role.salary}</strong><span>薪资范围</span></div>
+        <div class="role-view-meta-item"><strong>${role.companies}</strong><span>代表企业</span></div>
+        <div class="role-view-meta-item" style="flex:1 1 100%"><strong>${role.growth}</strong><span>成长路径</span></div>
+      `;
+      const detailEl = document.getElementById('roleDetail');
+      detailEl.innerHTML = (role.detail || []).map(item => `<li>${item}</li>`).join('');
+      detailEl.hidden = !(role.detail && role.detail.length);
+      backdrop.classList.add('open');
+    }
+    const competitions = [
+      {
+        name: '全国大学生嵌入式芯片与系统设计竞赛',
+        code: 'EMBEDDED CHIP / DESIGN',
+        category: 'hardware',
+        shortDesc: '教育部 A 类赛事，聚焦芯片应用、嵌入式软硬件开发，分芯片应用、芯片设计、FPGA 三大赛道。',
+        fullDesc: '全国大学生嵌入式芯片与系统设计竞赛，高校学科竞赛 A 类赛事，聚焦芯片应用、嵌入式软硬件开发。分芯片应用、芯片设计、FPGA 三大赛道，可组队参赛，先赛区选拔，晋级后南京国赛现场答辩。',
+        skills: '硬件电路、PCB 设计、单片机开发、鸿蒙系统应用开发、嵌入式软硬件设计、Linux 程序开发',
+        value: '教育部 A 类白名单赛事，含金量高。企业赛道国一可获得该企业实习的内推机会。获奖可按本校规则加综测分，对奖学金申请有帮助。',
+        enterprise: '华为海思、ST、移远通信、龙芯、瑞萨、软通动力等赛事出题企业，可为获奖选手开通实习免筛、面试直通、人才库收录等专属招聘渠道。',
+        difficulty: 'medium',
+        difficultyLabel: '中等',
+        grade: '大一即可参加积累经验，大二有一定基础即可冲击国奖',
+        badges: ['A类赛事', '白名单', '企业内推']
+      },
+      {
+        name: '全国大学生机器人竞赛 ROBOCON',
+        code: 'ROBOCON / ROBOT',
+        category: 'hardware',
+        shortDesc: '中国最具影响力的综合性大学生机器人竞赛，涵盖机械设计、嵌入式软件、ROS 等全栈能力。',
+        fullDesc: 'ROBOCON（Robot Contest）是中国最具影响力的综合性大学生机器人竞赛之一，旨在通过高难度任务挑战培养工程创新人才。自 2002 年在中国首次举办以来，已成为国内技术挑战性最强、参与高校最广的机器人赛事之一。比赛中涉及机械设计、机械加工、电路设计、嵌入式软件设计、机器人操作系统设计（ROS）等方面。',
+        skills: '机械设计、机械加工、电路设计、嵌入式软件设计、ROS 机器人操作系统、整机联调',
+        value: '对于实习就业均有较大帮助，诸多企业均设有 Robocon 竞赛经历的简历直通渠道；对综测加分有较大帮助（属白名单赛事）。',
+        enterprise: '大疆、宇树、拓竹、库犸动力等企业均设有独立招聘渠道，Robocon 经历可直通简历筛选。',
+        difficulty: 'high',
+        difficultyLabel: '较难',
+        grade: '需从大一随队学习，大二成为队内主力',
+        badges: ['白名单', '机械+电控', '企业直通']
+      },
+      {
+        name: 'ACM-ICPC 国际大学生程序设计竞赛',
+        code: 'ACM-ICPC / ALGORITHM',
+        category: 'software',
+        shortDesc: '全球知名的大学生程序设计竞赛，考察算法与数据结构解决实际问题的能力。',
+        fullDesc: 'ACM-ICPC（国际大学生程序设计竞赛）是全球知名的大学生程序设计竞赛，以团队形式参赛，主要考察选手运用算法与数据结构解决实际问题的能力。比赛通常要求在有限时间内完成多道编程题，对编程基础、算法思维和团队协作能力要求较高。',
+        skills: 'C/C++/Python/Java 编程、数据结构、算法、数学基础、图论、动态规划、搜索',
+        value: 'ACM 训练的 C/C++、数据结构、算法和编程能力与计算机类研究生复试中的机考高度契合。只要得国奖可免华为机试，直接面试。部分比赛现场有腾讯、字节、华为等招聘会，国二以上大概率能得到实习机会。',
+        enterprise: '腾讯、字节跳动、华为等大型科技企业的部分技术岗位会明确关注 ACM/ICPC 等算法竞赛经历。同花顺设有专门的"ACMer 摘星计划"，直接面向 ACM 竞赛人才设置专项岗位。',
+        difficulty: 'high',
+        difficultyLabel: '较难',
+        grade: '大一到大四都能参与，一年至少有 10 场国赛',
+        badges: ['国际赛事', '算法核心', '免笔试']
+      },
+      {
+        name: '蓝桥杯全国软件和信息技术专业人才大赛',
+        code: 'LANQIAO / SOFTWARE',
+        category: 'software',
+        shortDesc: '国内参与人数较多、影响力较大的大学生程序设计竞赛，适合新手入门。',
+        fullDesc: '蓝桥杯是国内参与人数较多、影响力较大的大学生程序设计竞赛之一，分为软件赛和电子赛等方向。软件赛主要考察 C/C++、Java、Python 等编程能力，以及数据结构与算法基础。',
+        skills: 'C/C++、Java、Python、数据结构、算法、STL、程序设计思维',
+        value: '蓝桥杯属于国内认可度较高的程序设计竞赛，获奖经历可作为个人能力证明，丰富简历内容。对于计算机相关专业考研复试中的机考、编程测试也有一定帮助。',
+        enterprise: '部分企业在招聘软件开发、测试、算法等岗位时会关注蓝桥杯等竞赛经历。对于普通本科学生来说，蓝桥杯获奖能够提升简历辨识度，是比较容易入门且认可度较高的程序设计竞赛。',
+        difficulty: 'medium',
+        difficultyLabel: '中等',
+        grade: '大一即可开始学习，大一、大二是参加蓝桥杯的最佳时期',
+        badges: ['入门友好', '参与广泛', '认可度高']
+      },
+      {
+        name: '中国高校计算机大赛——团体程序设计天梯赛',
+        code: 'TIANTI / TEAM',
+        category: 'software',
+        shortDesc: '以团队形式参赛，分为个人和团体成绩，考察程序设计基础与团队协作能力。',
+        fullDesc: '天梯赛是中国高校计算机大赛的重要赛事之一，以团队形式参赛，分为个人和团体成绩，主要考察程序设计基础、数据结构与算法能力。',
+        skills: 'C/C++、数据结构、基础算法、模拟、搜索、图论',
+        value: '天梯赛成绩能够体现程序设计能力和团队协作能力，对于计算机专业考研复试和求职简历具有一定帮助。',
+        enterprise: '天梯赛本身没有像 ICPC/CCPC 那样的企业招聘属性，但能够作为程序设计能力的证明，与蓝桥杯、ACM 等竞赛共同构成个人竞赛经历。',
+        difficulty: 'medium',
+        difficultyLabel: '中等',
+        grade: '大一只要学习一学期，大一、大二、大三都能参加',
+        badges: ['团队赛制', '基础考察', '积累经验']
+      },
+      {
+        name: '码蹄杯全国大学生程序设计竞赛',
+        code: 'MATI / PROGRAMMING',
+        category: 'software',
+        shortDesc: '面向大学生的程序设计竞赛，题目覆盖模拟、数据结构、搜索、动态规划等内容。',
+        fullDesc: '码蹄杯是面向大学生的程序设计竞赛，主要考察编程基础、算法和问题解决能力。比赛题目覆盖模拟、数据结构、搜索、动态规划等内容。',
+        skills: 'C/C++ 编程、算法、数据结构，提高代码实现能力、解题能力和比赛经验',
+        value: '获奖经历能够丰富个人简历，证明程序设计能力，对于评奖评优、竞赛经历积累和考研复试有一定帮助。',
+        enterprise: '企业对码蹄杯的认可度不如 ACM、蓝桥杯等老牌赛事，但对于普通本科学生而言，是积累竞赛经历、提升编程能力和准备更高水平比赛的良好平台。学校作为联合培训基地，对于获奖学生还将给予百度之星程序设计大赛的证书。',
+        difficulty: 'medium',
+        difficultyLabel: '中等偏上',
+        grade: '大一学习大概能拿省奖，大二有竞争国奖的实力',
+        badges: ['省奖易拿', '百度之星', '性价比高']
+      },
+      {
+        name: '全国大学生电子设计竞赛',
+        code: 'ELECTRONIC / DESIGN',
+        category: 'hardware',
+        shortDesc: '教育部、工信部主办的 A 类学科竞赛，电子信息类含金量很高，1994 年创办。',
+        fullDesc: '全国大学生电子设计竞赛是教育部、工信部主办的 A 类学科竞赛，电子信息类含金量很高，1994 年创办。周期：两年一届，单数年 8 月正式国赛；双数年举办 TI 杯等专题赛/省赛。3 人一队，4 天 3 夜半封闭，独立完成硬件焊接调试、软件编程、写设计报告，实物 + 报告一起评审。',
+        skills: '模拟电路与数字电路、运放滤波电源、STM32 等 MCU、C 语言、ADC/PWM/UART/I2C/SPI、传感器采集、电机驱动、PCB 原理图与制板、示波器万用表调试',
+        value: '国奖或省奖通常可按本校规则用于综测、奖学金、评优和推免加分，尤其对电子、自动化、通信、嵌入式、芯片应用等方向的简历和实习有较强认可度。',
+        enterprise: '获得广泛认可，电子信息类企业高度认可该赛事经历。',
+        difficulty: 'high',
+        difficultyLabel: '较高',
+        grade: '大一先补电路和 C 语言、进实验室，双数年参加',
+        badges: ['A类赛事', '4天3夜', '实物评审']
+      },
+      {
+        name: '中国机器人及人工智能大赛',
+        code: 'ROBOT & AI / CONTEST',
+        category: 'hardware',
+        shortDesc: '教育部 A 类赛事，覆盖机器人技术、人工智能算法、视觉识别与自主决策，是机器人+AI方向的核心赛事。',
+        fullDesc: '中国机器人及人工智能大赛由教育部认可并列为 A 类赛事，覆盖机器人技术、人工智能技术、机器人竞技、人工智能竞技四大方向，包括 Roban 机器人赛、资源采集、技能对抗等赛项。融合机械设计、嵌入式控制、机器视觉、深度学习、自主决策等全栈技术，适合机器人战队、AI 实验室和嵌入式团队组队参赛。',
+        skills: '机械设计与加工、嵌入式控制（STM32/Arduino/Raspberry Pi）、ROS 机器人操作系统、机器视觉（OpenCV/YOLO）、深度学习（TensorFlow/PyTorch）、自主导航与决策',
+        value: '教育部 A 类白名单赛事，含金量高。获奖可按本校规则加综测分，对奖学金申请有帮助。机器人+AI 交叉能力是当前企业最看重的方向之一，获奖经历在机器人工程、AI 算法、自动驾驶、智能制造等方向的求职中认可度很高。',
+        enterprise: '大疆、宇树科技、库犸动力、比亚迪、华为、阿里云等均设有机器人/AI 方向专项招聘，该赛事经历可直通简历筛选。',
+        difficulty: 'medium',
+        difficultyLabel: '中等',
+        grade: '大一大二加入战队积累，大二下学期至大三冲击国奖',
+        badges: ['A类赛事', '机器人+AI', '白名单']
+      }
+    ];
+
+    const compGrid = document.getElementById('compGrid');
+    function difficultyDots(level) {
+      const map = { low: 1, medium: 2, high: 3 };
+      const count = map[level] || 2;
+      const cls = level === 'high' ? 'high' : level === 'medium' ? 'medium' : '';
+      let html = '';
+      for (let i = 0; i < 3; i++) {
+        html += `<span class="comp-difficulty-dot${i < count ? ' filled' : ''}${i < count && cls ? ' ' + cls : ''}"></span>`;
+      }
+      return html;
+    }
+    function renderCompetitions(filter = 'all') {
+      compGrid.innerHTML = competitions.map((comp, index) => {
+        if (filter !== 'all' && comp.category !== filter) return '';
+        return `<article class="comp-card ${comp.category}" data-comp-index="${index}" tabindex="0">
+          <div class="comp-card-header">
+            <span class="comp-badge">${comp.badges[0]}</span>
+            <span class="comp-code">${comp.code}</span>
+          </div>
+          <h3>${comp.name}</h3>
+          <p>${comp.shortDesc}</p>
+          <div class="comp-tags">
+            ${comp.badges.map(b => `<span class="comp-tag">${b}</span>`).join('')}
+          </div>
+          <div class="comp-kpi">
+            <div class="comp-kpi-item"><strong>${comp.difficultyLabel}</strong><span>难度</span><div class="comp-difficulty">${difficultyDots(comp.difficulty)}</div></div>
+            <div class="comp-kpi-item"><strong>A类</strong><span>赛事级别</span></div>
+            <div class="comp-kpi-item"><strong>${comp.category === 'hardware' ? '硬件' : '软件'}</strong><span>方向</span></div>
+          </div>
+          <div class="comp-detail">
+            <strong>适合年级</strong>
+            <p>${comp.grade}</p>
+          </div>
+        </article>`;
+      }).join('');
+      document.querySelectorAll('.comp-card').forEach((card) => {
+        card.addEventListener('click', () => openCompetition(Number(card.dataset.compIndex)));
+        card.addEventListener('keydown', (event) => { if (event.key === 'Enter') openCompetition(Number(card.dataset.compIndex)); });
+      });
+    }
+    renderCompetitions();
+    document.querySelectorAll('.comp-filter').forEach((filter) => filter.addEventListener('click', () => {
+      document.querySelectorAll('.comp-filter').forEach(item => item.classList.remove('active'));
+      filter.classList.add('active');
+      renderCompetitions(filter.dataset.filter);
+    }));
+
+    function openCompetition(index) {
+      const comp = competitions[index];
+      backdrop.setAttribute('aria-labelledby', 'modalTitle');
+      roleView.hidden = true;
+      modalGeneric.hidden = false;
+      document.getElementById('modalTitle').textContent = comp.name;
+      document.getElementById('modalDescription').textContent = comp.fullDesc;
+      document.getElementById('modalMeta').innerHTML = comp.badges.map(b => `<span>${b}</span>`).join('');
+      document.getElementById('modalWorkLabel').textContent = '主要学习内容';
+      document.getElementById('modalWork').textContent = comp.skills;
+      document.getElementById('modalFitLabel').textContent = '获奖价值';
+      document.getElementById('modalFit').textContent = comp.value;
+      document.getElementById('modalStartLabel').textContent = '企业认可';
+      document.getElementById('modalStart').textContent = comp.enterprise;
+      document.getElementById('modalListLabel').textContent = '难度与年级';
+      document.getElementById('modalList').innerHTML = `<li>难度：${comp.difficultyLabel} · 适合${comp.grade}</li>`;
+      document.getElementById('modalExtraSection').hidden = true;
+      document.getElementById('clubExtraContent').hidden = true;
+      backdrop.classList.add('open');
+    }
+
+    const clubProfiles = [
+      { name: '嵌入式智控协会', group: 'EICA / EMBEDDED', desc: '广西科技大学嵌入式智控协会（Embedded Intelligent Control Association）是一个专注于嵌入式系统学习、实践与创新的学生社团，汇聚对物联网、单片机、人工智能、电力电子、国产替代软件和 OpenHarmony 感兴趣的同学。', work: '依托培训中心、实验室和协会共建企业联盟，开展技术培训、项目实践、竞赛支持与成员交流。', fit: '适合想从 0 开始学习嵌入式，愿意在实验室动手、参加竞赛或参与开源与工程项目的同学。', start: 'C 语言 → STM32 / 单片机 → PCB 与传感器 → Linux / OpenHarmony；可从 GPIO、蓝牙循迹小车或一个传感器节点开始。', detail: ['嵌入式系统', '电力电子', '人工智能与视觉', '国产替代软件', 'OpenHarmony'] },
+      { name: '低空飞行器协会', group: 'AIR / CONTROL', desc: '围绕无人机、飞控、传感器、视觉系统、软件开发和算法竞赛展开实践，把控制理论变成空中动作和可运行的软件系统。', work: '开展飞控调试、嵌入式开发、机器视觉和算法竞赛训练。', fit: '适合喜欢无人机、控制、软件开发、算法和真实设备测试的同学。', start: 'Python / C++ → 传感器 → 飞控仿真 → 视觉与算法；先完成一个仿真或目标识别项目。', detail: ['飞控工程', '机器视觉', '嵌入式硬件', '软件开发', '算法竞赛'] },
+      { name: '电气信息创新协会', group: 'POWER / AUTOMATION', desc: '电气信息创新协会是在学院指导下成立的科创类学生社团，面向全校热爱电子、电气、嵌入式技术的同学，开展技术培训、电路实操、PCB 绘制、单片机与电力电子项目实训，组织备赛全国大学生电子设计竞赛、数学建模、工程训练等学科竞赛，搭建技术交流、项目实践、团队协作的平台，以赛促学，把课本理论转化为硬件实物，提升成员工程实践、硬件调试、文档撰写与团队协作能力。协会定期开展元器件基础、单片机基础、电源拓扑、嘉立创 PCB 设计等内部培训，组织校内选拔赛，选拔优秀队伍冲击省级、国家级科创赛事，营造学院科创实践氛围。', work: '通过电路实操、PCB、单片机和电力电子实训，把课程理论转化为可测试的硬件作品。', fit: '适合喜欢电子、电气、硬件调试、竞赛和团队协作的同学。', start: '模电数电 → 原理图 → 嘉立创 PCB → 单片机；从一块传感器扩展板或电源小项目开始。', detail: ['元器件与电路基础', '单片机与电力电子', '电子设计、数学建模、工程训练竞赛', 'PCB 设计与硬件调试'] },
+      { name: '人工智能协会', group: 'AI / INNOVATION', desc: '人工智能协会汇聚热爱 AI 与科创实践的同学，下设项目部、宣传部、办公室和实践部。各部门分工协作，共同搭建技术交流、学科竞赛与项目实践平台，助力成员提升科创能力，探索人工智能的魅力。', work: '统筹实验室管理、竞赛组织、技术培训与宣传推广，为成员提供从零基础到专业的完整成长链路。', fit: '欢迎所有对人工智能技术感兴趣的同学加入，无论是否有基础，都能在这里找到适合自己的方向。', start: '先选择感兴趣的方向（实践 / 项目 / 宣传 / 行政），从内部培训和协会比赛开始，逐步进入战队或竞赛队伍。', detail: ['项目部：竞赛统筹与资料归档', '宣传部：通知发布与活动宣传', '办公室：成员档案与作品归档', '实践部：实验室管理与二课学分'] },
+      { name: 'LCR龙城机器人战队', group: 'ROBOCON / TEAM', desc: '广西科技大学 LCR 战队成立于 2018 年，面向中国大学生机器人大赛 Robocon 组建。在自动化学院（人工智能学院）支持和机械与汽车工程学院协同下，团队汇聚机械、电控、电路、算法等方向的学生，以工程实践完成机器人的设计、制造、调试与赛场对抗。', work: '围绕 ROBOCON 主赛、仿生足式和沙排之王等赛项，完成需求分析、机械设计、电控开发、电路制作、算法部署、整机调试与比赛交付。', fit: '适合愿意长期投入、从拧螺丝和焊板子做起，在真实机器人项目中持续解决问题的同学。', start: '机械 / 电控 / 电路 / 算法四个方向任选其一；先从一个可验收的小模块加入，跟着队伍完成训练、联调和复盘。', detail: ['机械组：匠心造物', '电控组：程序为魂', '电路组：焊铸精微', '算法组：算法赋能', '整机联调与赛场保障'] }
+    ];
+    const clubModuleData = {
+      '低空飞行器协会': { competitions: '围绕无人机、飞控、机器视觉、软件开发和算法竞赛开展训练，形成从仿真到实机的实践链路。', departments: [['飞控与嵌入式部', '姿态控制、传感器、飞控程序和板卡调试。'], ['软件开发部', '地面站、数据工具、通信协议和工程脚本。'], ['算法与视觉部', '目标识别、路径规划、数据处理和算法竞赛。'], ['测试与保障部', '飞行安全、设备检查、场地测试和数据复盘。']] },
+      '电气信息创新协会': { competitions: '重点组织电子设计、数学建模、工程训练和电气信息类赛事，定期开展校内选拔与赛前集训。', departments: [['电路与 PCB 部', '原理图、PCB、焊接、仪器测量和硬件调试。'], ['单片机与软件部', 'C/C++、单片机、通信协议和上位机工具。'], ['电力电子部', '电源拓扑、功率器件、电机驱动和效率测试。'], ['竞赛与项目部', '赛题分析、项目管理、技术文档和答辩展示。']] },
+      '人工智能协会': { competitions: '积极参与机器人及人工智能等权威赛事，遵循方案设计 → 模块开发 → 整机联调 → 现场竞技的全流程实践。聚焦创新性与工程性并重的赛题，通过竞赛成绩、技术报告与作品展示见证成员成长。', departments: [['项目部', '主要负责竞赛统筹，组织大家参赛，收集整理申报材料，做好资料归档。'], ['宣传部', '发布会议通知与拟发文件，统筹线上线下宣传矩阵；负责活动现场拍摄记录，活动结束后完成资料整理、归档并提交会长。'], ['办公室', '统筹赛事报名与组织，整理申报材料与计划书；建立成员档案库，系统化归档作品三视图与资料，确保协会内务流转高效有序。'], ['实践部', '管理实验室与会旗、会议签到，撰写主持稿、制作活动 PPT，同时运营二课部落，负责学分发放。'], ['技术部', '面向大一新生开展系统化技术培训，搭建从零基础到专业的成长阶梯；参加协会内部比赛，或进入战队。'], ['培训部', '协助技术部开展分层培训，帮助新成员快速融入并掌握核心技能。']] , contact: 'QQ群：712377207（扫码加入技术交流）' },
+      'LCR龙城机器人战队': { competitions: '团队参加中国大学生机器人大赛 Robocon，包含每年更新赛题的主赛、仿生足式机器人赛和沙排之王赛项。近两年在主赛与仿生足式相关项目中取得多项二等奖、三等奖，持续通过赛题拆解、方案迭代和现场复盘积累技术。', departments: [['机械组', '负责整机运动方案、机构设计、三维建模、工程图纸、3D 打印与快速原型迭代。'], ['电控组', '负责 STM32、实时系统、电机闭环、舵机 PWM、传感器滤波、通信协议与整机状态机。'], ['电路组', '负责焊接、线束规划、立创 EDA 原理图与 PCB Layout，以及电源、驱动和传感器接口板。'], ['算法组', '基于 Jetson 等机载计算平台，完成目标检测、视觉 SLAM、路径规划、导航避障与自主决策。']] , contact: '招新宣讲群：1093347241（QQ群）' }
+    };
+    const lcrGallerySources = [
+      'asset/pic/lcr/89E49E8C21DEDA70FD6CFAF2865799F7.jpg',
+      'asset/pic/lcr/image 7.png',
+      'asset/pic/lcr/image 5.png',
+      'asset/pic/lcr/image 6.png',
+      'asset/pic/lcr/image 1.png',
+      'asset/pic/lcr/image 2.png',
+      'asset/pic/lcr/image 3.png',
+      'asset/pic/lcr/主赛_队伍_崇武探幽二等奖.jpg',
+      'asset/pic/lcr/主赛_队伍_竞技二等奖.jpg',
+      'asset/pic/lcr/主赛_队伍_九宫藏宝二等奖.jpg',
+      'asset/pic/lcr/狗_队伍_任务三等奖.jpg',
+      'asset/pic/lcr/狗_队伍_障碍三等奖.jpeg',
+      'asset/pic/lcr/2025-RC-S-S-B02-08527125 (1).png',
+      'asset/pic/lcr/2025-RC-S-S-L36-51213280.png'
+    ];
+    const clubCards = [...document.querySelectorAll('[data-screen-panel="2"] .club-card')];
+    const departmentDetails = {
+      '硬件设计部': '负责原理图、PCB、焊接和仪器测量，从器件选型到样机验证建立完整硬件能力。适合喜欢电路、动手和定位信号问题的同学。',
+      '软件开发部': '负责 C/C++、单片机、Linux、通信协议和工具链，维护可复用代码并与硬件、算法模块协同。',
+      '算法与视觉部': '负责 Python、OpenCV、机器学习、数据处理和边缘 AI，把采集到的数据转化为识别、定位或决策结果。',
+      '竞赛与项目部': '负责赛题分析、任务拆解、进度管理、技术文档和答辩展示，让团队成果能够稳定交付并清晰表达。',
+      '飞控与嵌入式部': '负责飞控程序、姿态传感器、通信链路和嵌入式板卡，先在仿真中验证，再进入实机测试。',
+      '测试与保障部': '负责飞行前检查、场地测试、风险清单、数据记录和故障复盘，保障设备与比赛过程安全可靠。',
+      '电路与 PCB 部': '负责电源、接口、原理图、PCB 打样和硬件调试，把理论电路变成可测量、可迭代的实物。',
+      '单片机与软件部': '负责单片机程序、通信协议、上位机和测试工具，完成从底层驱动到功能演示的软件链路。',
+      '电力电子部': '负责电源拓扑、功率器件、电机驱动和效率测试，关注热、保护、稳定性和实际负载表现。',
+      '机械结构部': '负责机器人底盘、机械臂、执行机构和结构可靠性，确保设计能被加工、装配并承受比赛工况。',
+      '嵌入式与电控部': '负责机器人主控、驱动、通信、传感器和电机控制，让各个模块按照统一协议稳定协同。',
+      '视觉与算法部': '负责相机标定、目标识别、定位和策略算法，为机器人提供环境信息和动作决策。',
+      '整机与保障部': '负责系统集成、整机测试、比赛策略、现场维护和故障应急，把各个模块变成可完成任务的整机。'
+      ,
+      '会长团': '负责协会年度规划、校内外沟通、资源协调和重大项目决策，维护协会长期发展方向。',
+      '技术部': '负责嵌入式、单片机、PCB、人工智能和 OpenHarmony 等技术培训，组织实验室学习与竞赛项目。',
+      '组织部': '负责成员管理、活动组织、签到与内部协作，让培训、会议和项目安排能够稳定推进。',
+      '统筹部': '负责实验室、器件、场地和项目进度的统筹，为成员实践和竞赛提供后勤支持。',
+      '宣传部': '负责官网、协会动态、活动记录和视觉传播，整理并展示协会的学习成果。',
+      '项目部': '负责竞赛统筹、赛题分析、任务拆解和进度管理，组织成员参赛并收集整理申报材料，确保资料归档完整有序。',
+      '办公室': '负责赛事报名与组织，整理申报材料与计划书；建立成员档案库，系统化归档作品三视图与资料，确保协会内务流转高效有序。',
+      '实践部': '负责实验室与会旗管理、会议签到、主持稿撰写、活动 PPT 制作，同时运营二课部落，负责学分发放和成员实践记录。',
+      '技术部': '面向大一新生开展系统化技术培训，搭建从零基础到专业的成长阶梯；组织协会内部比赛，选拔优秀成员进入战队。',
+      '培训部': '协助技术部开展分层培训课程，帮助新成员快速融入并掌握核心技能，配合实践部完成训练任务。'
+    };
+    function bindDepartmentButtons() {
+      const module = [...document.querySelectorAll('#clubExtraContent .club-module')].find(candidate => {
+        const heading = candidate.querySelector('h4')?.textContent || '';
+        return /部门|方向/.test(heading);
+      });
+      if (!module) return;
+      const buttons = [...module.querySelectorAll('.club-module-card')];
+      buttons.forEach(button => {
+        const name = button.querySelector('strong')?.textContent.trim();
+        if (!name || !departmentDetails[name]) return;
+        button.classList.add('club-department-btn');
+        button.setAttribute('role', 'button');
+        button.setAttribute('tabindex', '0');
+        const showDetail = () => {
+          let detail = module.querySelector('.department-detail');
+          if (!detail) { detail = document.createElement('div'); detail.className = 'department-detail'; module.appendChild(detail); }
+          detail.innerHTML = `<strong>${name}</strong><p>${departmentDetails[name]}</p>`;
+        };
+        button.addEventListener('click', showDetail);
+        button.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); showDetail(); } });
+      });
+    }
+    const clubExtraContent = document.getElementById('clubExtraContent');
+    function openClub(index) {
+      const club = clubProfiles[index];
+      if (!club) return;
+      const isLcrClub = club.name === 'LCR龙城机器人战队';
+      const isEicaClub = club.name === '嵌入式智控协会';
+      backdrop.setAttribute('aria-labelledby', 'modalTitle');
+      roleView.hidden = true;
+      modalGeneric.hidden = false;
+      ['modalWorkSection', 'modalFitSection', 'modalStartSection', 'modalListSection', 'modalExtraSection'].forEach(id => { document.getElementById(id).hidden = true; });
+      clubExtraContent.hidden = false;
+      clubExtraContent.classList.toggle('lcr-mode', isLcrClub);
+      clubExtraContent.classList.toggle('eica-mode', isEicaClub);
+      document.getElementById('modalTitle').textContent = club.name;
+      document.getElementById('modalDescription').textContent = club.desc;
+      document.getElementById('modalMeta').innerHTML = club.group.split(' / ').map(item => `<span>${item}</span>`).join('');
+      document.getElementById('modalWorkLabel').textContent = '社团定位';
+      document.getElementById('modalFitLabel').textContent = '适合人群';
+      document.getElementById('modalStartLabel').textContent = '参与路径';
+      document.getElementById('modalListLabel').textContent = '主要方向';
+      document.getElementById('modalExtraSection').hidden = true;
+      document.getElementById('modalWork').textContent = club.work;
+      document.getElementById('modalFit').textContent = club.fit;
+      document.getElementById('modalStart').textContent = club.start;
+      document.getElementById('modalList').innerHTML = club.detail.map(item => `<li>${item}</li>`).join('');
+      if (club.name === '嵌入式智控协会') {
+        document.getElementById('clubExtraContent').innerHTML = `
+          <div class="club-module"><h4>01 · 协会简介</h4><p>嵌入式智控协会专注于嵌入式系统学习、实践与创新，汇聚对物联网、微处理器、人工智能、国产替代、电力电子和 OpenHarmony 感兴趣的同学。协会以动手实践为基石，培养成员在嵌入式硬件设计、软件开发和智能算法实现方面的能力。</p><div class="club-module-grid"><div class="club-module-card"><strong>学习交流</strong><span>技术分享、基础培训、代码阅读与经验交流。</span></div><div class="club-module-card"><strong>项目实践</strong><span>从传感器、单片机到联网设备，完成可演示作品。</span></div><div class="club-module-card"><strong>能力成长</strong><span>提升硬件设计、软件开发、算法实现和团队协作能力。</span></div><div class="club-module-card"><strong>技术方向</strong><span>嵌入式、电力电子、国产替代软件与 OpenHarmony。</span></div></div><div class="club-gallery"><button type="button" class="club-gallery-item gallery-hero" data-gallery-title="协会合照 01">协会合照 01</button><button type="button" class="club-gallery-item gallery-tall gallery-tone-2" data-gallery-title="项目讨论合照">项目讨论合照</button><button type="button" class="club-gallery-item gallery-wide gallery-tone-3" data-gallery-title="实践活动合照">实践活动合照</button><button type="button" class="club-gallery-item" data-gallery-title="板卡调试现场">板卡调试现场</button><button type="button" class="club-gallery-item" data-gallery-title="培训分享现场">培训分享现场</button><button type="button" class="club-gallery-item gallery-wide gallery-tone-2" data-gallery-title="团队协作记录">团队协作记录</button></div></div>
+          <div class="club-module"><h4>02 · 竞赛与成果</h4><p>协会组织成员参加电子设计、数学建模、工程训练、算法和嵌入式相关赛事，以赛促学，把课堂知识转化为硬件实物和可复现的软件成果。</p><div class="club-gallery"><button type="button" class="club-gallery-item certificate gallery-hero" data-gallery-title="获奖证书 01">获奖证书 01</button><button type="button" class="club-gallery-item certificate gallery-tall" data-gallery-title="竞赛证书 02">竞赛证书 02</button><button type="button" class="club-gallery-item gallery-wide gallery-tone-2" data-gallery-title="比赛现场照片 01">比赛现场照片 01</button><button type="button" class="club-gallery-item gallery-tone-3" data-gallery-title="答辩现场">答辩现场</button><button type="button" class="club-gallery-item gallery-tone-2" data-gallery-title="作品展示">作品展示</button><button type="button" class="club-gallery-item gallery-wide" data-gallery-title="赛后复盘">赛后复盘</button><button type="button" class="club-gallery-item certificate" data-gallery-title="竞赛证书 03">竞赛证书 03</button><button type="button" class="club-gallery-item gallery-tone-3" data-gallery-title="比赛现场照片 02">比赛现场照片 02</button></div></div>
+          <div class="club-module"><h4>03 · 部门分布</h4><p>协会按项目需要协同分工，新成员可以先选择一个部门学习，再逐步参与跨部门项目。</p><div class="club-module-grid"><div class="club-module-card"><strong>硬件设计部</strong><span>原理图、PCB、焊接、仪器测量与板卡调试。</span></div><div class="club-module-card"><strong>软件开发部</strong><span>C/C++、单片机、Linux、通信协议与工具链。</span></div><div class="club-module-card"><strong>算法与视觉部</strong><span>Python、机器学习、OpenCV、数据处理与边缘 AI。</span></div><div class="club-module-card"><strong>竞赛与项目部</strong><span>赛题分析、项目管理、技术文档、答辩与展示。</span></div></div></div>
+          <div class="club-module"><h4>04 · 联系我们</h4><p>欢迎对嵌入式、AI、物联网和硬件实践感兴趣的同学加入，也欢迎其他社团与协会交流合作。</p><div class="club-contact"><div class="club-contact-card"><strong>协会官网</strong><span>官网链接待补充</span></div><div class="club-contact-card"><strong>QQ群</strong><span>QQ群二维码待补充</span></div><div class="club-contact-card"><strong>公众号</strong><span>公众号二维码待补充</span></div></div></div>`;
+        clubExtraContent.innerHTML = `
+          <div class="club-module"><h4>01 · 协会定位</h4><p>官网将嵌入式智控协会定位为广西科技大学面向嵌入式系统学习、实践与创新的学生社团，服务对象覆盖对物联网、单片机、人工智能、电力电子和智能控制感兴趣的同学。协会以动手实践为基石，让成员在交流、培训和项目中把知识转化为可运行的作品。</p><div class="club-module-grid"><div class="club-module-card"><strong>学习平台</strong><span>通过培训中心、代码阅读和实验室学习，建立从 C 语言、单片机到系统开发的基础。</span></div><div class="club-module-card"><strong>工程实践</strong><span>围绕传感器、PCB、控制器、联网设备和智能终端完成可测试、可复现的项目。</span></div><div class="club-module-card"><strong>竞赛支持</strong><span>以赛促学，支持嵌入式芯片与系统设计、机器人、电子设计和数学建模等方向。</span></div><div class="club-module-card"><strong>开放协作</strong><span>通过协会动态、企业共建联盟和 OpenHarmony 等开源生态拓展技术视野。</span></div></div></div>
+          <div class="club-module"><h4>02 · 培训与实践</h4><p>本地协会资料显示，协会持续开展 C 语言、STM32、GPIO、蓝牙通信、电机驱动、OLED、PCB 和实验室考核等训练，也维护元器件管理与培训活动中心。</p><div class="club-module-grid"><div class="club-module-card"><strong>嵌入式基础</strong><span>C 语言、STM32、GPIO、串口通信、传感器与执行器。</span></div><div class="club-module-card"><strong>硬件与电力电子</strong><span>模电数电、立创 EDA、PCB 制作、电源和电机驱动。</span></div><div class="club-module-card"><strong>智能系统</strong><span>人工智能、机器视觉、物联网和边缘设备应用。</span></div><div class="club-module-card"><strong>国产软件生态</strong><span>关注 OpenHarmony、国产芯片和可替代软件工具链。</span></div></div></div>
+          <div class="club-module"><h4>03 · 组织架构</h4><p>官网 2025—2026 成员页设置会长团、技术部、组织部、统筹部和宣传部。新成员可以先加入技术学习，再参与活动组织、项目协作或内容传播。</p><div class="club-module-grid"><div class="club-module-card"><strong>会长团</strong><span>年度规划、对外联络与发展决策。</span></div><div class="club-module-card"><strong>技术部</strong><span>技术培训、实验室学习与竞赛项目。</span></div><div class="club-module-card"><strong>组织部</strong><span>成员管理、活动执行与内部协作。</span></div><div class="club-module-card"><strong>统筹部</strong><span>实验室、器件、场地和项目资源协调。</span></div><div class="club-module-card"><strong>宣传部</strong><span>官网维护、协会动态和成果展示。</span></div></div></div>
+          <div class="club-module"><h4>04 · 官方入口</h4><p>协会官网提供协会动态、培训中心、成员架构、实验室导航、企业共建联盟和元器件管理等入口。</p><div class="club-contact"><div class="club-contact-card"><strong>协会官网</strong><span><a href="https://www.eica.cc/" target="_blank" rel="noopener noreferrer">www.eica.cc ↗</a></span></div><div class="club-contact-card"><strong>实验室位置</strong><span>T7-103，面向成员开放实践。</span></div><div class="club-contact-card"><strong>元器件管理</strong><span><a href="https://cmp.eica.cc/" target="_blank" rel="noopener noreferrer">cmp.eica.cc ↗</a></span></div><div class="club-contact-card"><strong>协会口号</strong><span>让智能控制更简单。</span></div></div></div>`;
+
+        const eicaAwardFiles = [
+          '2025第27届机器人及其人工智能国家一等奖(获奖学生：庞儿茗、赵磊、陈樊超；指导老师：廖凤依).png',
+          '2025第八届全国大学生嵌入式芯片设计大赛国家一等奖(获奖学生：黄海东、胡志勇、王旭晖；指导老师：高远、陈文辉).jpg',
+          '2025中国高校智能机器人创意大赛组国家二等奖(获奖学生：伍师宝、曹俊、莫敏；指导老师：石玉秋).jpg',
+          '2025年睿抗机器人开发者大赛国家二等奖(获奖学生：廖俊峰、黄海东；指导老师：高远).jpg',
+          '2025第27届机器人及其人工智能国家二等奖(获奖学生：黄海东、王旭晖、叶倩茹；指导老师：石玉秋).png',
+          '2025年8月2025中国工程机器人暨国际公开赛国家级级二等奖。（获奖学生：廖俊峰、万欣雨、杨佳；指导教师：高远、黄华芳）.jpg',
+          '2024第十二届全国大学生数字媒体科技作品及创意竞赛国家三等奖(获奖学生：陈健锋、黄海东、黄永幸、庞儿茗、李浩；指导老师：余玲、刘瑞琪).jpg',
+          '2025第27届机器人及其人工智能国家级三等奖(获奖学生：廖俊峰、罗威、翟诗雨；指导老师：高远、窦双团).jpg',
+          '2025第27届机器人及其人工智能国家优秀奖(获奖学生：韦竣嵩、徐潇潇、廖应涛；指导老师：李忠富).png',
+          '2025机器人及其人工智能陈健锋区一.png',
+          '2025数学建模袁诗琪广西区一.jpg',
+          '2025第七届计算机设计大赛广西一等奖（获奖学生：黄海东、王旭晖、叶倩茹、陈健锋；指导老师：廖凤依、石玉秋）.jpg',
+          '2024数学建模陈健锋广西区二.png',
+          '2025区级二等奖--庞儿茗、曹俊、陈奕扬--2025年睿抗机器人开发者大赛.jpg',
+          '2025睿抗庞儿茗区二.jpg',
+          '2025区级三等奖--庞儿茗、李浩、陈樊超--2025年第八届中国高校智能机器人创意大赛.jpg',
+          '2025嵌入式芯片设计大赛梁邦健区三.jpg',
+          '2025计算机设计大赛林华为区三.jpg',
+          '2025科普创新大赛廖俊峰区三.jpg',
+          '2025机器人及其人工智能翟诗雨区三.png',
+          '2025机器人及其人工智能覃彩梅区三.png',
+          '2025机器人及其人工智能蓝巧区三.jpg',
+          '2024数媒廖俊峰区三.jpg',
+          '2025睿抗林华为区三.jpg',
+          '2025"粤嵌软通杯"校一.jpg',
+          '2024电子设计竞赛校一.jpg',
+          '2024数学建模竞赛黄海东校三.jpg',
+          '2024软件著作权.jpg',
+          '2024优秀学生社团.jpg',
+          '2025中国工程机器人大赛暨国际公开赛（获奖学生：廖俊峰、万欣雨、杨佳；指导老师：高远、黄华芳）.jpg',
+        ];
+        const eicaAwards = [
+          ['2025 · 第27届中国机器人及人工智能大赛国家一等奖', '2025第27届机器人及其人工智能国家一等奖(获奖学生：庞儿茗、赵磊、陈樊超；指导老师：廖凤依).png'],
+          ['2025 · 第八届全国大学生嵌入式芯片设计大赛国家一等奖', '2025第八届全国大学生嵌入式芯片设计大赛国家一等奖(获奖学生：黄海东、胡志勇、王旭晖；指导老师：高远、陈文辉).jpg'],
+          ['2025 · 中国高校智能机器人创意大赛国家二等奖', '2025中国高校智能机器人创意大赛组国家二等奖(获奖学生：伍师宝、曹俊、莫敏；指导老师：石玉秋).jpg'],
+          ['2025 · 睿抗机器人开发者大赛国家二等奖', '2025年睿抗机器人开发者大赛国家二等奖(获奖学生：廖俊峰、黄海东；指导老师：高远).jpg'],
+          ['2025 · 第27届中国机器人及人工智能大赛国家二等奖', '2025第27届机器人及其人工智能国家二等奖(获奖学生：黄海东、王旭晖、叶倩茹；指导老师：石玉秋).png'],
+          ['2025 · 中国工程机器人大赛暨国际公开赛国家二等奖', '2025年8月2025中国工程机器人暨国际公开赛国家级级二等奖。（获奖学生：廖俊峰、万欣雨、杨佳；指导教师：高远、黄华芳）.jpg'],
+          ['2024 · 数字媒体科技作品及创意竞赛国家三等奖', '2024第十二届全国大学生数字媒体科技作品及创意竞赛国家三等奖(获奖学生：陈健锋、黄海东、黄永幸、庞儿茗、李浩；指导老师：余玲、刘瑞琪).jpg'],
+          ['2025 · 第27届中国机器人及人工智能大赛国家级三等奖', '2025第27届机器人及其人工智能国家级三等奖(获奖学生：廖俊峰、罗威、翟诗雨；指导老师：高远、窦双团).jpg'],
+          ['2025 · 第27届中国机器人及人工智能大赛国家优秀奖', '2025第27届机器人及其人工智能国家优秀奖(获奖学生：韦竣嵩、徐潇潇、廖应涛；指导老师：李忠富).png'],
+          ['2025 · 第七届计算机设计大赛广西一等奖', '2025第七届计算机设计大赛广西一等奖（获奖学生：黄海东、王旭晖、叶倩茹、陈健锋；指导老师：廖凤依、石玉秋）.jpg'],
+          ['2025 · 数学建模竞赛广西区一等奖（袁诗琪）', '2025数学建模袁诗琪广西区一.jpg'],
+          ['2025 · 机器人及人工智能大赛广西区一等奖（陈健锋）', '2025机器人及其人工智能陈健锋区一.png'],
+          ['2024 · 数学建模竞赛广西区二等奖（陈健锋）', '2024数学建模陈健锋广西区二.png'],
+          ['2025 · 睿抗机器人开发者大赛广西区二等奖', '2025区级二等奖--庞儿茗、曹俊、陈奕扬--2025年睿抗机器人开发者大赛.jpg'],
+          ['2025 · 睿抗机器人开发者大赛广西区二等奖（庞儿茗）', '2025睿抗庞儿茗区二.jpg'],
+          ['2025 · 中国高校智能机器人创意大赛广西区三等奖', '2025区级三等奖--庞儿茗、李浩、陈樊超--2025年第八届中国高校智能机器人创意大赛.jpg'],
+          ['2025 · 机器人及人工智能大赛广西区三等奖（覃彩梅）', '2025机器人及其人工智能覃彩梅区三.png'],
+          ['2025 · 科普创新大赛广西区三等奖（廖俊峰）', '2025科普创新大赛廖俊峰区三.jpg'],
+          ['2025 · 嵌入式芯片设计大赛广西区三等奖（梁邦健）', '2025嵌入式芯片设计大赛梁邦健区三.jpg'],
+          ['2025 · 计算机设计大赛广西区三等奖（林华为）', '2025计算机设计大赛林华为区三.jpg'],
+          ['2025 · 机器人及人工智能大赛广西区三等奖（蓝巧）', '2025机器人及其人工智能蓝巧区三.jpg'],
+          ['2025 · 机器人及人工智能大赛广西区三等奖（翟诗雨）', '2025机器人及其人工智能翟诗雨区三.png'],
+          ['2024 · 数字媒体竞赛广西区三等奖（廖俊峰）', '2024数媒廖俊峰区三.jpg'],
+          ['2025 · 睿抗机器人开发者大赛广西区三等奖（林华为）', '2025睿抗林华为区三.jpg'],
+          ['2025 · 粤嵌软通杯校级一等奖', '2025"粤嵌软通杯"校一.jpg'],
+          ['2024 · 电子设计竞赛校级一等奖', '2024电子设计竞赛校一.jpg'],
+          ['2024 · 数学建模竞赛校级三等奖（黄海东）', '2024数学建模竞赛黄海东校三.jpg'],
+          ['2024 · 软件著作权', '2024软件著作权.jpg'],
+          ['2024 · 优秀学生社团', '2024优秀学生社团.jpg'],
+          ['2025 · 中国工程机器人大赛暨国际公开赛', '2025中国工程机器人大赛暨国际公开赛（获奖学生：廖俊峰、万欣雨、杨佳；指导老师：高远、黄华芳）.jpg'],
+        ];
+        const eicaGallery = `<div class="club-gallery eica-award-wall" aria-label="2024至2025年度协会获奖证书"><div class="eica-award-summary"><strong>${eicaAwardFiles.length}</strong><span>项证书成果</span></div>${eicaAwards.map(([title], index) => {
+          const heroClass = [0, 1].includes(index) ? ' gallery-hero' : '';
+          return `<button type="button" class="club-gallery-item certificate has-photo${heroClass}" data-gallery-title="${title}" data-gallery-src="asset/pic/eica/certs/${eicaAwardFiles[index]}"><img class="gallery-photo" src="asset/pic/eica/certs/${eicaAwardFiles[index]}" alt="${title}" loading="lazy"><span class="award-caption">${title}</span></button>`;
+        }).join('')}</div>`;
+        const eicaGalleryAnchor = clubExtraContent.querySelector('.club-module:last-child');
+        if (eicaGalleryAnchor) eicaGalleryAnchor.insertAdjacentHTML('afterend', eicaGallery);
+      }
+      if (club.name !== '嵌入式智控协会') {
+        const moduleData = clubModuleData[club.name];
+        const departments = moduleData?.departments || club.detail.map(item => [item, '围绕项目实践开展学习、协作与成果沉淀。']);
+        document.getElementById('clubExtraContent').innerHTML = `
+          <div class="club-module"><h4>01 · 社团简介</h4><p>${club.desc}</p><div class="club-module-grid">${club.detail.slice(0, 4).map((item, index) => `<div class="club-module-card"><strong>${item}</strong><span>${['基础培训与技术交流', '项目实践与模块开发', '竞赛训练与成果展示', '团队协作与经验复盘'][index] || '持续学习与实践'}</span></div>`).join('')}</div><div class="club-gallery"><button type="button" class="club-gallery-item gallery-hero" data-gallery-title="社团合照">社团合照</button><button type="button" class="club-gallery-item gallery-tall gallery-tone-2" data-gallery-title="项目实践">项目实践</button><button type="button" class="club-gallery-item gallery-wide gallery-tone-3" data-gallery-title="团队活动">团队活动</button><button type="button" class="club-gallery-item" data-gallery-title="训练现场">训练现场</button><button type="button" class="club-gallery-item gallery-tone-2" data-gallery-title="设备调试">设备调试</button><button type="button" class="club-gallery-item gallery-wide" data-gallery-title="成果展示">成果展示</button></div></div>
+          <div class="club-module"><h4>02 · 比赛与成果</h4><p>${moduleData?.competitions || '围绕社团方向参加专业竞赛和项目实践，持续积累作品、证书和技术文档。'}</p><div class="club-gallery"><button type="button" class="club-gallery-item certificate gallery-hero" data-gallery-title="获奖证书">获奖证书</button><button type="button" class="club-gallery-item certificate gallery-tall" data-gallery-title="项目证书">项目证书</button><button type="button" class="club-gallery-item gallery-wide gallery-tone-2" data-gallery-title="比赛现场">比赛现场</button><button type="button" class="club-gallery-item gallery-tone-3" data-gallery-title="答辩展示">答辩展示</button><button type="button" class="club-gallery-item gallery-tone-2" data-gallery-title="赛场准备">赛场准备</button><button type="button" class="club-gallery-item gallery-wide" data-gallery-title="团队合影">团队合影</button><button type="button" class="club-gallery-item certificate" data-gallery-title="获奖证书 02">获奖证书 02</button><button type="button" class="club-gallery-item gallery-tone-3" data-gallery-title="项目实物">项目实物</button></div></div>
+          <div class="club-module"><h4>03 · 部门与方向</h4><p>新成员可以先选择一个方向参与，在项目中逐步理解完整协作流程。</p><div class="club-module-grid">${departments.map(([name, text]) => `<div class="club-module-card"><strong>${name}</strong><span>${text}</span></div>`).join('')}</div></div>
+          <div class="club-module"><h4>04 · 联系方式</h4><p>欢迎对相关方向感兴趣的同学加入，也欢迎其他社团与团队交流合作。</p><div class="club-contact"><div class="club-contact-card"><strong>协会官网</strong><span>官网链接待补充</span></div><div class="club-contact-card"><strong>QQ群</strong><span>${moduleData?.contact || 'QQ群二维码待补充'}</span></div><div class="club-contact-card"><strong>公众号</strong><span>公众号二维码待补充</span></div></div></div>`;
+      }
+      if (isLcrClub) {
+        clubExtraContent.insertAdjacentHTML('afterbegin', `<div class="lcr-hero-strip"><div><h4>把机器人从图纸带到赛场。</h4><p>从 2018 年建队至今，LCR 用机械、电控、电路和算法四条技术线，把每一次赛题拆解成可以制造、可以调试、可以上场的机器人。</p></div><div class="lcr-hero-stats"><div class="lcr-hero-stat"><strong>2018</strong><span>战队建立</span></div><div class="lcr-hero-stat"><strong>4</strong><span>技术组协作</span></div><div class="lcr-hero-stat"><strong>3</strong><span>Robocon 赛项</span></div><div class="lcr-hero-stat"><strong>1093347241</strong><span>招新宣讲群</span></div></div></div>`);
+        clubExtraContent.querySelector('.lcr-hero-strip').insertAdjacentHTML('afterend', `<div class="lcr-video-module"><div><h4>2027 战队宣传片</h4><p>从机械结构、电控程序到算法视觉，看看 LCR 如何把训练、联调和比赛现场串成一条完整的工程实践链路。</p></div><video controls preload="metadata" playsinline><source src="asset/mov/lcr2027宣传片.mp4" type="video/mp4">你的浏览器不支持视频播放。</video></div>`);
+        clubExtraContent.querySelector('.club-module')?.classList.add('lcr-intro-module');
+        const contactModule = [...clubExtraContent.querySelectorAll('.club-module')].find(module => (module.querySelector('h4')?.textContent || '').startsWith('04'));
+        if (contactModule) {
+          contactModule.innerHTML = `<h4>04 · 加入 LCR</h4><div class="lcr-contact-layout"><div><p>欢迎对机器人、机械、电控、电路、嵌入式和算法视觉感兴趣的同学加入。可以先扫码进入招新宣讲群，也可以查看完整的战队介绍。</p><a class="lcr-link-button" href="https://ycndfh1q80oh.feishu.cn/wiki/LkZFwdwkAiiNP1kauOpc5Vo7nKX" target="_blank" rel="noopener noreferrer">查看战队介绍 ↗</a></div><figure class="lcr-qr"><img src="asset/pic/lcr/image.png" alt="LCR 招新宣讲群二维码"><figcaption>扫码加入招新宣讲群</figcaption></figure></div>`;
+        }
+        const galleryItems = [...clubExtraContent.querySelectorAll('.club-gallery-item')];
+        galleryItems.forEach((item, itemIndex) => {
+          if (lcrGallerySources[itemIndex]) item.dataset.gallerySrc = lcrGallerySources[itemIndex];
+        });
+      }
+      hydrateGalleryImages(clubExtraContent);
+      bindDepartmentButtons();
+      backdrop.classList.add('open');
+    }
+    clubCards.forEach((card, index) => {
+      card.addEventListener('click', () => openClub(index));
+      card.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openClub(index); } });
+    });
+    const imageViewer = document.getElementById('imageViewer');
+    const imageViewerArt = document.getElementById('imageViewerArt');
+    const imageViewerImage = document.getElementById('imageViewerImage');
+    const imageViewerTitle = document.getElementById('imageViewerTitle');
+    const imageViewerCount = document.getElementById('imageViewerCount');
+    let activeGalleryItems = [];
+    let activeGalleryIndex = 0;
+    function hydrateGalleryImages(container) {
+      container.querySelectorAll('.club-gallery-item[data-gallery-src]').forEach(item => {
+        if (item.querySelector('.gallery-photo')) return;
+        const source = encodeURI(item.dataset.gallerySrc);
+        const title = item.dataset.galleryTitle || item.textContent.trim();
+        const caption = item.querySelector('.award-caption');
+        item.classList.add('has-photo');
+        item.innerHTML = '';
+        const image = document.createElement('img');
+        image.className = 'gallery-photo';
+        image.src = source;
+        image.alt = title;
+        image.loading = 'lazy';
+        item.append(image);
+        if (caption) {
+          caption.textContent = title;
+          item.append(caption);
+        }
+      });
+    }
+    function renderGalleryViewer() {
+      const source = activeGalleryItems[activeGalleryIndex];
+      if (!source) return;
+      const title = source.dataset.galleryTitle || source.textContent.trim();
+      const hasImage = Boolean(source.dataset.gallerySrc);
+      imageViewerArt.className = 'image-viewer-art';
+      imageViewerImage.hidden = !hasImage;
+      imageViewerImage.src = hasImage ? encodeURI(source.dataset.gallerySrc) : '';
+      imageViewerImage.alt = title;
+      imageViewerTitle.textContent = title;
+      imageViewerCount.textContent = `${String(activeGalleryIndex + 1).padStart(2, '0')} / ${String(activeGalleryItems.length).padStart(2, '0')}`;
+    }
+    function openGallery(item) {
+      activeGalleryItems = [...item.closest('.club-gallery').querySelectorAll('.club-gallery-item')];
+      activeGalleryIndex = Math.max(0, activeGalleryItems.indexOf(item));
+      renderGalleryViewer();
+      imageViewer.hidden = false;
+      document.body.classList.add('viewer-open');
+      requestAnimationFrame(() => imageViewer.classList.add('open'));
+    }
+    function closeGallery() {
+      imageViewer.classList.remove('open');
+      document.body.classList.remove('viewer-open');
+      window.setTimeout(() => { if (!imageViewer.classList.contains('open')) imageViewer.hidden = true; }, 240);
+    }
+    function stepGallery(direction) {
+      if (!activeGalleryItems.length) return;
+      activeGalleryIndex = (activeGalleryIndex + direction + activeGalleryItems.length) % activeGalleryItems.length;
+      imageViewerArt.style.transform = 'scale(.94) rotateY(' + (direction > 0 ? '7deg' : '-7deg') + ')';
+      window.setTimeout(() => { renderGalleryViewer(); imageViewerArt.style.transform = ''; }, 120);
+    }
+    document.addEventListener('click', event => {
+      const galleryItem = event.target.closest('.club-gallery-item');
+      if (galleryItem && !event.target.closest('#imageViewer')) { event.preventDefault(); openGallery(galleryItem); return; }
+      if (event.target.matches('[data-viewer-close]') || event.target.closest('#galleryClose')) closeGallery();
+      if (event.target.closest('#galleryPrev')) stepGallery(-1);
+      if (event.target.closest('#galleryNext')) stepGallery(1);
+    });
+    document.addEventListener('keydown', event => {
+      if (!imageViewer.classList.contains('open')) return;
+      if (event.key === 'Escape') closeGallery();
+      if (event.key === 'ArrowLeft') stepGallery(-1);
+      if (event.key === 'ArrowRight') stepGallery(1);
+    });
+    function closeModal() { roleView.hidden = true; modalGeneric.hidden = true; backdrop.classList.remove('open'); }
+    document.getElementById('closeModal').addEventListener('click', closeModal);
+    backdrop.addEventListener('click', (event) => { if (event.target === backdrop) closeModal(); });
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !imageViewer.classList.contains('open')) closeModal(); });
+
+    const routeQuestions = [
+      { text: '如果给你一整天自由时间，你最想先做什么？', options: [['写一个能控制设备的程序', 'code'], ['画电路并焊出一块板子', 'hardware'], ['让电机或机构按轨迹运动', 'control'], ['组装一台会完成任务的机器人', 'robot'], ['用相机识别物体或环境', 'vision']] },
+      { text: '哪种"问题被解决"的瞬间最让你有成就感？', options: [['程序终于稳定运行', 'code'], ['波形和电压符合预期', 'hardware'], ['设备动作又快又准', 'control'], ['整机完成一套任务', 'robot'], ['识别结果准确可靠', 'vision']] },
+      { text: '你更愿意长期使用哪类工具？', options: [['编辑器、终端和调试器', 'code'], ['万用表、示波器和烙铁', 'hardware'], ['控制器、驱动器和调试软件', 'control'], ['机器人平台和整机工具', 'robot'], ['相机、标定板和数据集', 'vision']] },
+      { text: '面对一个陌生系统，你通常先关注什么？', options: [['数据如何流动、代码如何执行', 'code'], ['电源、接口和信号质量', 'hardware'], ['输入、输出和反馈关系', 'control'], ['模块如何协同完成任务', 'robot'], ['系统如何感知和判断环境', 'vision']] },
+      { text: '哪种学习方式最适合你？', options: [['边读文档边写小程序', 'code'], ['边测量边修改电路', 'hardware'], ['边建模边调参数', 'control'], ['边组装边做整机测试', 'robot'], ['边采集数据边优化模型', 'vision']] },
+      { text: '你对数学的兴趣更接近哪一项？', options: [['用逻辑和算法解决问题', 'code'], ['分析电路和器件参数', 'hardware'], ['研究系统响应和稳定性', 'control'], ['理解运动和空间关系', 'robot'], ['研究图像、特征和几何', 'vision']] },
+      { text: '你更想让哪类设备变得更聪明？', options: [['传感器节点和智能终端', 'code'], ['电源、板卡和仪器', 'hardware'], ['电机、产线和执行机构', 'control'], ['机器人和无人机', 'robot'], ['相机和检测设备', 'vision']] },
+      { text: '遇到偶发故障时，你会优先怎么做？', options: [['加日志、断点和测试用例', 'code'], ['测电压、波形和连接关系', 'hardware'], ['检查反馈、参数和控制环', 'control'], ['从整机复现并逐模块排查', 'robot'], ['检查图像、光照和数据质量', 'vision']] },
+      { text: '你更能接受哪种工作节奏？', options: [['安静地长时间调试代码', 'code'], ['实验室里反复验证样机', 'hardware'], ['现场联调设备和产线', 'control'], ['围绕比赛节点推进整机', 'robot'], ['不断试验数据和模型', 'vision']] },
+      { text: '哪种成果最适合放进你的作品集？', options: [['一个可复用的软件模块', 'code'], ['一块自己设计的 PCB', 'hardware'], ['一套稳定运行的控制系统', 'control'], ['一台完成任务的机器人', 'robot'], ['一个可解释的视觉应用', 'vision']] },
+      { text: '你更想先掌握哪种基础？', options: [['C / C++ 和数据结构', 'code'], ['模电、数电和 PCB', 'hardware'], ['控制理论和电机基础', 'control'], ['机器人系统和通信总线', 'robot'], ['Python、OpenCV 和线性代数', 'vision']] },
+      { text: '团队协作中你更愿意承担什么角色？', options: [['维护代码和接口文档', 'code'], ['负责板卡和线束可靠性', 'hardware'], ['负责参数、动作和现场调试', 'control'], ['负责整机集成和任务推进', 'robot'], ['负责相机、数据和识别效果', 'vision']] },
+      { text: '哪类反馈最能帮助你进步？', options: [['代码评审和测试结果', 'code'], ['测量数据和电路复盘', 'hardware'], ['曲线、误差和响应时间', 'control'], ['整机成功率和任务完成度', 'robot'], ['准确率、召回率和误检案例', 'vision']] },
+      { text: '如果参加竞赛，你更期待哪种挑战？', options: [['写出稳定的底层程序', 'code'], ['在限制条件下做出可靠硬件', 'hardware'], ['让系统在变化条件下保持稳定', 'control'], ['在规定时间内完成整机任务', 'robot'], ['让机器准确识别目标', 'vision']] },
+      { text: '你对哪种"看不见的东西"最感兴趣？', options: [['程序状态和内存数据', 'code'], ['电流、电压和电磁信号', 'hardware'], ['系统误差和动态响应', 'control'], ['模块之间的通信和状态', 'robot'], ['图像特征和概率分布', 'vision']] },
+      { text: '你希望毕业时最擅长解决哪类问题？', options: [['复杂软件功能落地', 'code'], ['硬件故障与信号完整性', 'hardware'], ['设备运动与产线效率', 'control'], ['机器人整机可靠性', 'robot'], ['环境感知与目标识别', 'vision']] },
+      { text: '哪种现场最让你想多待一会儿？', options: [['电脑前的开发环境', 'code'], ['电子实验室和测试台', 'hardware'], ['自动化产线和控制柜', 'control'], ['机器人调试场和比赛现场', 'robot'], ['视觉实验室和采集现场', 'vision']] },
+      { text: '你更愿意从哪种小项目开始？', options: [['做一个温湿度采集程序', 'code'], ['做一个传感器扩展板', 'hardware'], ['做一个电机闭环控制器', 'control'], ['做一个循迹或抓取机器人', 'robot'], ['做一个颜色或形状识别器', 'vision']] },
+      { text: '当结果不理想时，你通常更愿意？', options: [['重构代码并补充测试', 'code'], ['重新检查器件和焊点', 'hardware'], ['分析曲线并重新整定参数', 'control'], ['拆分模块重新做整机验证', 'robot'], ['补采数据并调整算法', 'vision']] },
+      { text: '最后，哪句话最像你的长期目标？', options: [['让设备按照可靠的软件运行', 'code'], ['把想法做成稳定的硬件', 'hardware'], ['让复杂设备精准而高效地运动', 'control'], ['打造能在真实环境完成任务的机器人', 'robot'], ['让机器真正看懂周围世界', 'vision']] },
+      { text: '你最想深入哪种系统边界？', options: [['驱动、应用与操作系统之间', 'code'], ['器件、接口与整机之间', 'hardware'], ['控制器、执行器与产线之间', 'control'], ['底盘、机械臂与任务系统之间', 'robot'], ['相机、算法与决策之间', 'vision']] },
+      { text: '哪种技术指标最能激发你的兴趣？', options: [['延迟、吞吐和内存占用', 'code'], ['噪声、温升和信号完整性', 'hardware'], ['超调、稳态误差和响应时间', 'control'], ['成功率、续航和任务时间', 'robot'], ['准确率、召回率和帧率', 'vision']] },
+      { text: '你更愿意把哪种能力练到熟练？', options: [['读日志、查源码和定位软件故障', 'code'], ['看原理图、焊接和使用示波器', 'hardware'], ['接线、调参和现场排障', 'control'], ['装配、标定和整机联调', 'robot'], ['标注、训练和评估模型', 'vision']] },
+      { text: '如果加入团队，你希望先接手哪项任务？', options: [['实现一个驱动或通信模块', 'code'], ['画一张原理图并打样', 'hardware'], ['编写一段 PLC 或运动控制逻辑', 'control'], ['负责一个机器人子系统集成', 'robot'], ['完成相机标定和目标识别', 'vision']] },
+      { text: '你更喜欢哪种"从零到一"的过程？', options: [['从空白工程搭出可运行程序', 'code'], ['从元器件搭出能工作的电路', 'hardware'], ['从控制目标调出稳定动作', 'control'], ['从零件拼出会执行任务的机器', 'robot'], ['从数据训练出可用的识别器', 'vision']] },
+      { text: '哪种知识组合最吸引你？', options: [['C 语言、Linux 和通信协议', 'code'], ['模电、数电和 PCB 设计', 'hardware'], ['PLC、电机和自动控制', 'control'], ['ROS、运动学和传感器融合', 'robot'], ['Python、OpenCV 和深度学习', 'vision']] },
+      { text: '你希望未来解决哪种真实场景问题？', options: [['让设备稳定联网并持续运行', 'code'], ['让产品更安全、更可靠、更易维护', 'hardware'], ['让工厂设备更高效、更精准', 'control'], ['让机器人在复杂环境自主完成任务', 'robot'], ['让机器理解现场目标和变化', 'vision']] },
+      { text: '哪种复盘方式最适合你？', options: [['对照日志和代码提交记录', 'code'], ['对照测量数据和电路版本', 'hardware'], ['对照曲线、参数和动作结果', 'control'], ['对照任务流程和整机故障记录', 'robot'], ['对照样本、误检和模型指标', 'vision']] },
+      { text: '参加比赛时，你更想承担哪种压力？', options: [['在截止时间前交付稳定代码', 'code'], ['在成本和空间限制下完成硬件', 'hardware'], ['在现场变化中保持控制稳定', 'control'], ['在倒计时内让整机完成任务', 'robot'], ['在复杂光照下保持识别准确', 'vision']] },
+      { text: '你会用什么方式证明自己真的学会了？', options: [['独立写出并维护一个程序', 'code'], ['独立设计并测试一块板卡', 'hardware'], ['独立完成一套设备控制', 'control'], ['独立让机器人完成一项任务', 'robot'], ['独立做出可复现的视觉结果', 'vision']] }
+    ];
+
+    const routeData = {
+      code: { title: '嵌入式软件 / Linux 路线', text: '从 C 语言和单片机开始，把每一次控制和通信都做成可运行的模块。', role: '嵌入式软件工程师', club: '嵌入式智控协会、LCR龙城机器人战队', start: 'C 语言 + STM32' },
+      hardware: { title: '硬件设计 / 测试路线', text: '从电路、器件和仪器开始，逐步做出稳定的板卡与整机系统。', role: '嵌入式硬件工程师', club: '低空飞行器协会、电气信息创新协会', start: '模电数电 + PCB' },
+      control: { title: '自动化 / 电机控制路线', text: '从控制对象和传感器入手，让电机、设备和产线按照目标稳定运行。', role: '电机控制工程师', club: '电气信息创新协会、LCR龙城机器人战队', start: '控制基础 + PLC' },
+      robot: { title: '机器人控制 / 嵌入式路线', text: '从一个执行器开始理解机器人，最后参与整机控制与系统联调。', role: '机器人控制工程师', club: 'LCR龙城机器人战队、嵌入式智控协会', start: 'C++ + 机器人基础' },
+      vision: { title: '视觉 / 智能系统路线', text: '从图像处理开始，让机器获取环境信息，并将视觉结果用于控制决策。', role: '机器视觉工程师', club: '低空飞行器协会、LCR龙城机器人战队', start: 'Python + OpenCV' }
+    };
+    const roleGroups = {
+      code: ['嵌入式软件工程师', '嵌入式 Linux 工程师', '机器人嵌入式工程师', '物联网工程师'],
+      hardware: ['嵌入式硬件工程师', '硬件测试工程师'],
+      control: ['PLC 工程师', '自动化工程师', '电力电子工程师', '电机控制工程师'],
+      robot: ['机器人控制工程师', '飞控工程师'],
+      vision: ['机器视觉工程师']
+    };
+    const roleCategory = Object.entries(roleGroups).reduce((map, [category, names]) => {
+      names.forEach(name => { map[name] = category; });
+      return map;
+    }, {});
+    const roleClubs = {
+      'PLC 工程师': '课程学习、企业实训或项目实践',
+      '自动化工程师': '课程学习、企业实训或项目实践'
+    };
+    const roleRouteData = Object.fromEntries(Object.entries(roleCategory).map(([role, category]) => [role, {
+      title: `${role}路线`,
+      text: roleProfiles[role].work,
+      role,
+      club: roleClubs[role] || routeData[category].club,
+      start: roleProfiles[role].start
+    }]));
+    let currentQuestion = 0;
+    const routeAnswers = routeQuestions.map(question => question.options[0][1]);
+    const quizProgress = document.getElementById('quizProgress');
+    const routeQuiz = document.getElementById('routeQuiz');
+    const quizPrev = document.getElementById('quizPrev');
+    const quizNext = document.getElementById('quizNext');
+    const generateBtn = document.getElementById('generateBtn');
+    function renderQuiz() {
+      const question = routeQuestions[currentQuestion];
+      quizProgress.textContent = `第 ${currentQuestion + 1} / ${routeQuestions.length} 题 · 单选`;
+      routeQuiz.innerHTML = `<fieldset class="quiz-question"><legend>${currentQuestion + 1}. ${question.text}</legend>${question.options.map(([label, key]) => `<label class="quiz-option"><input type="radio" name="route-current" value="${key}" ${routeAnswers[currentQuestion] === key ? 'checked' : ''}>${label}</label>`).join('')}</fieldset>`;
+      quizPrev.disabled = currentQuestion === 0;
+      quizNext.hidden = currentQuestion === routeQuestions.length - 1;
+      generateBtn.hidden = currentQuestion !== routeQuestions.length - 1;
+    }
+    routeQuiz.addEventListener('change', (event) => {
+      if (event.target.matches('input[type="radio"]')) routeAnswers[currentQuestion] = event.target.value;
+    });
+    quizPrev.addEventListener('click', () => {
+      if (currentQuestion > 0) { currentQuestion -= 1; renderQuiz(); }
+    });
+    quizNext.addEventListener('click', () => {
+      if (currentQuestion < routeQuestions.length - 1) { currentQuestion += 1; renderQuiz(); }
+    });
+    function renderRoute() {
+      const scores = Object.fromEntries(Object.keys(roleCategory).map(role => [role, 0]));
+      routeQuestions.forEach((_, questionIndex) => {
+        const category = routeAnswers[questionIndex];
+        const group = roleGroups[category] || [];
+        if (group.length) {
+          const focus = questionIndex % group.length;
+          group.forEach((role, roleIndex) => {
+            const distance = (roleIndex - focus + group.length) % group.length;
+            scores[role] += distance === 0 ? 3 : distance === 1 ? 2 : 1;
+          });
+        }
+      });
+      const rankingEntries = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+      const key = rankingEntries[0][0];
+      const recommendedRoles = rankingEntries.slice(0, 2).map(([name]) => name);
+      const data = roleRouteData[key];
+      const ranking = rankingEntries.slice(0, 3).map(([name, score]) => `${name} ${score} 分`).join(' · ');
+      const recommendedStarts = recommendedRoles.map(role => `${role}：${roleProfiles[role].start}`).join('<br>');
+      document.getElementById('routeOutput').innerHTML = `<div class="eyebrow">Your first route</div><h3>${data.title}</h3><p>${data.text}</p><p style="margin-top:12px;color:#e7f34b">匹配度：${ranking}</p><div class="route-result"><div class="result-cell"><span>推荐职业</span><strong>${recommendedRoles.join('、')}</strong></div><div class="result-cell"><span>入门路径</span><strong>${data.club}</strong></div><div class="result-cell"><span>大一开始</span><strong>${recommendedStarts}</strong></div></div>`;
+    }
+    renderQuiz();
+    document.getElementById('routeOutput').innerHTML = '<div class="eyebrow">Your first route</div><h3>完成 30 题后查看路线</h3><p>逐题回答后，这里会按 13 个具体就业方向加权分析，并给出 1—2 个推荐职位、入门路径</p>';
+    generateBtn.addEventListener('click', renderRoute);
+
+    document.getElementById('fullscreenBtn').addEventListener('click', async () => {
+      if (!document.fullscreenElement) await document.documentElement.requestFullscreen?.();
+      else await document.exitFullscreen?.();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+# 忽略临时文件和大文件
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# 视频文件（264MB，通过Git LFS或直接排除）
+live/asset/mov/

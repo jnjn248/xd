@@ -1,0 +1,27 @@
+# 视频文件
+temp/mov/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+pnpm-lock.yaml
+
+# 临时文件与系统文件
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# IDE 文件
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 构建输出（如果有）
+dist/
+build/
+out/
