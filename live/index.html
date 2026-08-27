@@ -399,6 +399,9 @@
     .role-view-desc { margin: 0; color: var(--ink); font-size: 17px; font-weight: 600; line-height: 1.65; }
     .role-view-detail { display: grid; gap: 8px; padding: 0; margin-top: 20px; list-style: none; }
     .role-view-detail li { padding: 11px 13px; border-left: 3px solid var(--blue); background: #f4f6f4; color: #3d4647; font-size: 13px; line-height: 1.6; }
+    .role-view-prep { margin-top: 20px; padding: 16px 18px; border-radius: 10px; background: linear-gradient(135deg, #f0faf4, #e8f5e9); border: 1px solid #c8e6c9; }
+    .role-prep-label { display: inline-block; padding: 3px 10px; border-radius: 4px; background: #2e7d32; color: #fff; font-size: 10px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px; }
+    .role-view-prep p { margin: 0; color: #2e4a2e; font-size: 13.5px; line-height: 1.85; }
     .club-module { padding: 18px 0; border-top: 1px solid var(--line); }
     .club-module:first-child { padding-top: 0; border-top: 0; }
     .club-module h4 { margin: 0 0 8px; font-size: 19px; }
@@ -565,6 +568,8 @@
       .role-view { grid-template-columns: 1fr; gap: 16px; }
       .role-view-body h3 { font-size: 34px; }
       .role-view-desc { font-size: 15px; }
+      .role-view-prep { padding: 12px 14px; }
+      .role-view-prep p { font-size: 12px; line-height: 1.75; }
       .club-module-grid { grid-template-columns: 1fr; }
       .lcr-hero-strip { grid-template-columns: 1fr; padding: 18px; }
       .lcr-hero-strip > div:first-child::before { margin-bottom: 16px; }
@@ -631,15 +636,15 @@
             <h1>先看到未来，<br><mark style="background: var(--yellow); padding: 0 .08em;">再决定从哪里出发。</mark></h1>
             <p class="lead">这不是一场只讲 PPT 的介绍会。我们从真实项目、工程职业和社团实践出发，帮你在开学前看清一条可以开始的路。</p>
             <div class="metric-row">
-              <div class="metric"><strong>13</strong><span>个职业方向</span></div>
-              <div class="metric"><strong>4</strong><span>个协会与社团</span></div>
+              <div class="metric"><strong>14</strong><span>个职业方向</span></div>
+              <div class="metric"><strong>5</strong><span>个协会与战队</span></div>
               <div class="metric"><strong>1</strong><span>张个人路线图</span></div>
             </div>
           </div>
         </div>
         <div class="timeline" style="margin-top:0">
           <div class="year"><span class="year-no">01</span><h3>看见成果</h3><p>先展示机器人、无人机、智能控制项目，建立对未来的直观印象。</p></div>
-          <div class="year"><span class="year-no">02</span><h3>认识职业</h3><p>从职业而不是专业出发，了解 13 类工程师在真实工作中做什么。</p></div>
+          <div class="year"><span class="year-no">02</span><h3>认识职业</h3><p>从职业而不是专业出发，了解 14 类工程师在真实工作中做什么。</p></div>
           <div class="year"><span class="year-no">03</span><h3>进入社团</h3><p>认识协会、LCR Robocon 战队和对应的项目入门路径</p></div>
           <div class="year"><span class="year-no">04</span><h3>带走路线</h3><p>根据自己的兴趣现场生成一张大学四年学习路线。</p></div>
         </div>
@@ -648,12 +653,12 @@
       <section class="screen" data-screen-panel="1">
         <div class="eyebrow">Chapter 02 · career map</div>
         <h2>不是选择专业，<br>是先认识你想成为的工程师。</h2>
-        <p class="lead">下面的 13 个职业覆盖软件、硬件、工业控制、机器人和智能系统。点击任意卡片，可以在直播时展开介绍。</p>
-        <div class="section-head"><div><div class="eyebrow">13 roles / 03 groups</div><h3>职业方向清单</h3></div><p>按职业族筛选</p></div>
+        <p class="lead">下面的 14 个职业覆盖软件、硬件、工业控制、电气系统和智能系统。职业距离的公司仅供参考，最终就业公司以实际为主。</p>
+        <div class="section-head"><div><div class="eyebrow">14 roles / 04 groups</div><h3>职业方向清单</h3></div><p>按职业族筛选</p></div>
         <div class="role-controls">
-          <button class="filter active" data-filter="all">全部 13</button>
+          <button class="filter active" data-filter="all">全部 14</button>
           <button class="filter" data-filter="software">软件与系统 4</button>
-          <button class="filter" data-filter="control">硬件与控制 6</button>
+          <button class="filter" data-filter="control">硬件与控制 7</button>
           <button class="filter" data-filter="robot">机器人与智能 3</button>
         </div>
         <div class="role-grid" id="roleGrid"></div>
@@ -710,6 +715,7 @@
         <div class="club-grid" style="margin-top:24px">
           <article class="club-card"><div class="club-top"><div class="club-symbol">M</div><span class="club-code">MICROCOMPUTER</span></div><h3>微控 / 嵌入式</h3><p>以产品研发为主，适合硬件、软件、测试和 PCB 方向。薪资成长更好，五年后基本过万；但项目周期长、加班多、压力大，存在 35 岁中年危机，必须早做课程和项目积累。</p><div class="club-links"><span>C 语言</span><span>单片机</span><span>模电数电</span><span>电力电子</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--blue);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">核心课程</strong>C 语言程序设计、电路原理、模拟电子技术、数字电子技术、信号分析处理、单片机原理、电力电子技术</div></article>
           <article class="club-card"><div class="club-top"><div class="club-symbol">A</div><span class="club-code">AUTOMATION</span></div><h3>工控 / PLC</h3><p>入门门槛低、就业面广、国企岗位多。优势是稳定和实操快；挑战是常年驻项目现场、车间倒班、出差频繁，生活体验感一般。</p><div class="club-links"><span>电气控制</span><span>PLC</span><span>自控原理</span><span>电机拖动</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--yellow);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">核心课程</strong>电气控制及 PLC、自动控制原理、现代控制理论、电机及拖动基础</div></article>
+          <article class="club-card"><div class="club-top"><div class="club-symbol">电</div><span class="club-code">ELECTRICAL</span></div><h3>电气工程师</h3><p>从事供配电、继电保护、电气设计和电力系统运维，就业面覆盖电网公司、电力设计院、发电集团和新能源企业。优势是稳定、薪资中等偏上；挑战是需要考取相关执业资格证书，部分岗位需长期驻守变电站或跟随项目出差。</p><div class="club-links"><span>供配电</span><span>继电保护</span><span>电气设计</span><span>电网公司</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--green);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">核心课程</strong>电路原理、电机学、电力系统分析、继电保护、高电压技术、发电厂电气部分</div></article>
           <article class="club-card"><div class="club-top"><div class="club-symbol">R</div><span class="club-code">RESEARCH</span></div><h3>研发中厂机会</h3><p>嵌入式研发岗位少但价值高。CVTE 视源股份和华勤技术对自动化背景较友好，优先争取实习，再用实习撬动校招。</p><div class="club-links"><span>视源股份</span><span>华勤技术</span><span>暑期实习</span></div></article>
         </div>
 
@@ -755,6 +761,14 @@
           <div class="chapter-intro-item" style="border-left-color:var(--green)"><strong>抓住大二关键期</strong><span>每个专业大二都会有人获得"大满贯"。走体制内还是体制外，最好在大二形成初步答案，大三用一年时间去验证和补齐能力。</span></div>
         </div>
 
+        <div class="section-head" style="margin-top:28px"><div><div class="eyebrow">Electrical Engineering Path</div><h3>04 · 电气方向四年学习路径</h3></div><p>从大一开始，按年度递进建立电气工程师的核心能力</p></div>
+        <div class="timeline">
+          <div class="year"><span class="year-no">大一</span><h3>打牢基础</h3><p>电气工程师的根基是电路和数学。大一要把电路原理和高等数学学扎实，同时了解电气工程的基本概念和就业方向。</p><ul><li>电路原理（基尔霍夫定律、欧姆定律、简单电路计算）</li><li>高等数学（微积分、级数）</li><li>了解电气工程师的工作内容和行业分布</li><li>加入电气信息创新协会或相关社团</li></ul></div>
+          <div class="year"><span class="year-no">大二</span><h3>建立专业框架</h3><p>大二是分水岭。模电数电、电机学和自控原理是电气工程师的核心专业课，必须同时通过四级。</p><ul><li>模拟电子技术、数字电子技术</li><li>电机学（变压器、异步电机、同步电机）</li><li>自动控制原理、现代控制理论</li><li>拿下英语四级，开始关注电气类竞赛</li></ul></div>
+          <div class="year"><span class="year-no">大三</span><h3>聚焦方向 + 实习</h3><p>大三要明确自己是走电网/供电局方向还是电力电子/新能源方向，同时争取进入实验室或企业实习。</p><ul><li>电力系统分析、继电保护、高电压技术</li><li>发电厂电气部分、供配电设计</li><li>参加电子设计竞赛、数学建模</li><li>暑期实习或进实验室跟项目</li></ul></div>
+          <div class="year"><span class="year-no">大四</span><h3>求职 / 考研冲刺</h3><p>大四上学期是校招黄金期，电网一批考试通常在年底。根据大三的积累，选择电网考试、考研或直接就业。</p><ul><li>电网公司校园招聘或国家电网考试</li><li>考研：电气工程（0808）或能源动力（0858）</li><li>完善简历，突出项目经历和实习</li><li>考取相关证书（电工证、注册电气工程师基础课）</li></ul></div>
+        </div>
+
         <figure class="share-figure">
           <img src="asset/pic/share/share-direction.jpg" alt="自动化专业就业方向示意图">
           <figcaption>PPT 配图：微型计算机控制与工业控制方向示意。</figcaption>
@@ -782,8 +796,8 @@
 
         <div class="section-head" style="margin-top:28px"><div><div class="eyebrow">School Recommendations</div><h3>02 · 冲稳保推荐</h3></div><p>按上岸难度设置梯度，结合历年上岸情况与今年考试情况</p></div>
         <div class="club-grid">
-          <article class="club-card"><div class="club-top"><div class="club-symbol">冲</div><span class="club-code">HIGH TARGET</span></div><h3>重庆邮电大学</h3><p>控制工程 085406；政治、英二、数二、自控（不含现控）。初试复试 5:5，学科评估 B-。2026 复试线 330，难度高。</p><div class="club-links"><span>B-</span><span>GPA 靠前</span><span>项目经历强</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--red);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">适合人群</strong>GPA 在专业前列、通过英语四级、项目经历丰富、自律能力较强的同学。<strong style="display:block;margin-top:4px">工作去向</strong>华为、小米、腾讯、三大运营商等。</div></article>
-          <article class="club-card"><div class="club-top"><div class="club-symbol">稳</div><span class="club-code">BALANCED</span></div><h3>桂林电子科技大学南宁研究院</h3><p>控制工程 085406；政治、英二、数二、电子技术综合（模电 + 数电）。初试复试 5:5。2026 复试线 254，难度中等偏下。</p><div class="club-links"><span>四级通过</span><span>项目经历丰富</span><span>自律能力一般</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--yellow);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">适合人群</strong>通过英语四级、项目经历丰富、自律能力一般的同学。<strong style="display:block;margin-top:4px">工作去向</strong>华为、珠三角地区、三大运营商等。</div></article>
+          <article class="club-card"><div class="club-top"><div class="club-symbol">冲</div><span class="club-code">HIGH TARGET</span></div><h3>重庆邮电大学</h3><p>控制工程 085406；政治、英二、数二、自控（不含现控）。初试复试 5:5，学科评估 B-。2026 复试线 330，难度高。</p><div class="club-links"><span>B-</span><span>GPA 靠前</span><span>项目经历强</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--red);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">适合人群</strong>GPA 在专业前列、通过英语四级、项目经历丰富、自律能力较强的同学。<strong style="display:block;margin-top:4px">工作去向</strong>深信服、海康威视、大疆、CVTE、三大运营商等。</div></article>
+          <article class="club-card"><div class="club-top"><div class="club-symbol">稳</div><span class="club-code">BALANCED</span></div><h3>桂林电子科技大学南宁研究院</h3><p>控制工程 085406；政治、英二、数二、电子技术综合（模电 + 数电）。初试复试 5:5。2026 复试线 254，难度中等偏下。</p><div class="club-links"><span>四级通过</span><span>项目经历丰富</span><span>自律能力一般</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--yellow);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">适合人群</strong>通过英语四级、项目经历丰富、自律能力一般的同学。<strong style="display:block;margin-top:4px">工作去向</strong>深信服、海康威视、CVTE、珠三角地区、三大运营商等。</div></article>
           <article class="club-card"><div class="club-top"><div class="club-symbol">保</div><span class="club-code">SAFETY</span></div><h3>广西科技大学</h3><p>控制工程 085406；政治、英二、数二、自控（不含现控）。初试复试 5:5。2026 复试线 254，上岸难度较低，保护本校。</p><div class="club-links"><span>柳钢 / 禾望电气</span><span>高职高专院校</span><span>适合继续深造但不内卷</span></div><div style="margin-top:8px;padding:8px 10px;border-left:3px solid var(--green);background:#f4f6f4;font-size:12px;color:#3d4647;line-height:1.6"><strong style="font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px">适合人群</strong>想继续深造但不用这么卷的同学，保护本校。<strong style="display:block;margin-top:4px">工作去向</strong>柳钢、禾望电气、高职高专院校等。</div></article>
         </div>
 
@@ -833,6 +847,7 @@
           <div class="role-view-tags" id="roleTags"></div>
           <div class="role-view-meta" id="roleMeta"></div>
           <ul class="role-view-detail" id="roleDetail"></ul>
+          <div class="role-view-prep" id="rolePrep"><span class="role-prep-label">四年准备计划</span><p id="rolePrepText"></p></div>
         </div>
       </div>
       <div id="modalGeneric" hidden>
@@ -864,19 +879,20 @@
 
   <script>
     const roles = [
-      { name: '嵌入式软件工程师', group: 'software', desc: '编写单片机、传感器和执行器的控制程序。', tags: ['C / C++', 'MCU', 'RTOS'], detail: ['把硬件变成可运行的设备功能。', '适合从 C 语言、单片机和通信协议开始。'], salary: '8K – 25K', companies: '华为、小米、大疆、CVTE、汇川技术', growth: '初级 → 中级（3年）→ 高级/架构师（5-8年）→ 技术专家/项目经理' },
-      { name: '嵌入式 Linux 工程师', group: 'software', desc: '开发 Linux 设备上的驱动、应用和系统功能。', tags: ['Linux', '驱动', 'Shell'], detail: ['连接底层硬件与上层应用。', '适合学习 C、Linux、交叉编译和设备树。'], salary: '12K – 30K', companies: '华为、瑞芯微、全志、中移物联、翱捷科技', growth: '初级 → 中级（2-3年）→ 高级/系统架构师（5-8年）→ 技术总监/开源贡献者' },
-      { name: '机器人嵌入式工程师', group: 'software', desc: '负责机器人主控、传感器通信和执行器控制。', tags: ['C++', 'CAN', 'ROS'], detail: ['让机器人各个模块可靠协同。', '需要同时理解嵌入式、通信和机器人系统。'], salary: '10K – 28K', companies: '大疆、宇树、库犸、优必选、埃斯顿', growth: '初级 → 中级（3年）→ 高级/ROS架构师（5-8年）→ 技术负责人/创业' },
-      { name: '物联网工程师', group: 'software', desc: '让设备采集数据、连接网络并与平台通信。', tags: ['MQTT', 'TCP/IP', '云平台'], detail: ['完成设备端、网络和平台之间的数据链路。', '适合学习 MCU、网络协议和基础后端。'], salary: '8K – 22K', companies: '小米、阿里云、腾讯云、海尔智家、涂鸦智能', growth: '初级 → 中级（2-3年）→ 高级/解决方案架构师（5-7年）→ IoT产品总监' },
-      { name: '嵌入式硬件工程师', group: 'control', desc: '设计电路板、接口、电源和传感器信号链路。', tags: ['原理图', 'PCB', '示波器'], detail: ['把系统需求落实成稳定的电路和板卡。', '需要掌握模电、数电、PCB 和仪器使用。'], salary: '9K – 24K', companies: '华为、中兴、OPPO、vivo、立创商城', growth: '初级 → 中级（3年）→ 高级/硬件架构师（5-8年）→ 硬件总监/技术合伙人' },
-      { name: '硬件测试工程师', group: 'control', desc: '验证板卡和整机功能，定位异常并推动改进。', tags: ['测试', '定位', '可靠性'], detail: ['让设备从"能工作"变成"稳定工作"。', '适合喜欢观察、验证和解决工程问题的同学。'], salary: '7K – 20K', companies: '华为、小米、比亚迪、TCL华星、富士康', growth: '初级 → 中级（2-3年）→ 高级/测试架构师（5-7年）→ 质量总监/可靠性专家' },
-      { name: 'PLC 工程师', group: 'control', desc: '编写工业控制程序并调试生产线设备。', tags: ['PLC', '梯形图', '工业通信'], detail: ['控制工业现场的设备、产线和执行机构。', '需要理解 PLC、变频器、触摸屏和工业网络。'], salary: '6K – 18K', companies: '汇川技术、信捷电气、西门子、三菱、ABB', growth: '初级 → 中级（2-3年）→ 高级/自动化系统工程师（5-8年）→ 项目总监/技术顾问' },
-      { name: '自动化工程师', group: 'control', desc: '负责自动化设备、传感器和整套控制系统。', tags: ['产线', '控制系统', '调试'], detail: ['把多个设备和控制模块组成完整系统。', '工作中需要软硬件结合与现场协作能力。'], salary: '7K – 20K', companies: '汇川技术、中控技术、新松机器人、埃斯顿、宝信软件', growth: '初级 → 中级（3年）→ 高级/系统架构师（5-8年）→ 技术总监/自主创业' },
-      { name: '电力电子工程师', group: 'control', desc: '设计电源、逆变器、变换器和功率控制系统。', tags: ['功率器件', 'PWM', '电源'], detail: ['关注能量如何变换、传输和高效控制。', '适合对电路、器件和能源设备感兴趣的同学。'], salary: '10K – 28K', companies: '阳光电源、华为数字能源、比亚迪、宁德时代、台达', growth: '初级 → 中级（3年）→ 高级/功率专家（5-8年）→ 技术总监/产品线负责人' },
-      { name: '电机控制工程师', group: 'control', desc: '控制电机的速度、位置和转矩。', tags: ['FOC', 'PID', 'DSP'], detail: ['让电机按目标平稳、精准地运动。', '需要结合电机原理、控制算法和嵌入式实现。'], salary: '9K – 26K', companies: '汇川技术、比亚迪、上海电驱动、精进电动、方正电机', growth: '初级 → 中级（2-3年）→ 高级/控制算法专家（5-8年）→ 技术负责人/专利发明人' },
-      { name: '机器人控制工程师', group: 'robot', desc: '开发机器人的运动、导航和整机控制逻辑。', tags: ['运动学', '控制算法', 'ROS'], detail: ['把机器人要完成的动作变成可执行的控制策略。', '适合喜欢数学、系统和整机调试的同学。'], salary: '12K – 32K', companies: '大疆、宇树、优必选、库犸、新松机器人', growth: '初级 → 中级（3年）→ 高级/运动控制专家（5-8年）→ 技术总监/机器人公司创始人' },
-      { name: '机器视觉工程师', group: 'robot', desc: '让机器通过相机识别目标、位置和环境。', tags: ['OpenCV', '识别', '定位'], detail: ['从图像中提取机器可以使用的信息。', '可以从 Python、OpenCV 和基础图像处理开始。'], salary: '12K – 35K', companies: '大疆、海康威视、商汤、旷视、地平线', growth: '初级 → 中级（2-3年）→ 高级/AI视觉专家（5-7年）→ 技术总监/AI产品负责人' },
-      { name: '飞控工程师', group: 'robot', desc: '负责无人机姿态、导航和飞行稳定性控制。', tags: ['姿态', '导航', '传感器融合'], detail: ['让飞行器在复杂环境中保持稳定并完成任务。', '需要学习控制理论、IMU、嵌入式和飞控系统。'], salary: '12K – 30K', companies: '大疆、极飞、纵横、亿航、鸿翼智能', growth: '初级 → 中级（2-3年）→ 高级/飞控架构师（5-8年）→ 技术总监/飞控产品负责人' }
+      { name: '嵌入式软件工程师', group: 'software', desc: '编写单片机、传感器和执行器的控制程序。', tags: ['C / C++', 'MCU', 'RTOS'], detail: ['把硬件变成可运行的设备功能。', '适合从 C 语言、单片机和通信协议开始。'], salary: '8K – 25K', companies: '深信服、海康威视、CVTE、汇川技术、瑞芯微', growth: '初级 → 中级（3年）→ 高级/架构师（5-8年）→ 技术专家/项目经理', prep: '大一打牢 C 语言和电路基础，大二深入 STM32、GPIO 和外设驱动，大三学习 RTOS 和通信协议并参加电子设计竞赛，大四完成一个完整的嵌入式项目作品。四年持续在 GitHub 积累代码，通过竞赛检验能力，毕业时具备独立开发嵌入式产品的能力。' },
+      { name: '嵌入式 Linux 工程师', group: 'software', desc: '开发 Linux 设备上的驱动、应用和系统功能。', tags: ['Linux', '驱动', 'Shell'], detail: ['连接底层硬件与上层应用。', '适合学习 C、Linux、交叉编译和设备树。'], salary: '12K – 30K', companies: '瑞芯微、全志、中移物联、翱捷科技、CVTE', growth: '初级 → 中级（2-3年）→ 高级/系统架构师（5-8年）→ 技术总监/开源贡献者', prep: '大一掌握 C 语言和 Linux 命令行基础，大二学习交叉编译、Bootloader 和根文件系统，大三深入驱动开发和设备树，大四完成一个 Linux 嵌入式系统项目。四年坚持阅读内核源码和参与开源项目，通过实习积累经验，毕业时能独立移植和开发 Linux 嵌入式系统。' },
+      { name: '机器人嵌入式工程师', group: 'software', desc: '负责机器人主控、传感器通信和执行器控制。', tags: ['C++', 'CAN', 'ROS'], detail: ['让机器人各个模块可靠协同。', '需要同时理解嵌入式、通信和机器人系统。'], salary: '10K – 28K', companies: '大疆、宇树、库犸、优必选、埃斯顿', growth: '初级 → 中级（3年）→ 高级/ROS架构师（5-8年）→ 技术负责人/创业', prep: '大一学习 C++ 和基础电子，大二掌握 CAN/串口通信和 ROS 基础，大三深入传感器融合、执行器控制和实时调度，大四完成一个机器人子系统或整机项目。四年参加 Robocon 和机器人竞赛，持续在 GitHub 维护机器人代码，毕业时具备机器人主控开发和整机联调能力。' },
+      { name: '物联网工程师', group: 'software', desc: '让设备采集数据、连接网络并与平台通信。', tags: ['MQTT', 'TCP/IP', '云平台'], detail: ['完成设备端、网络和平台之间的数据链路。', '适合学习 MCU、网络协议和基础后端。'], salary: '8K – 22K', companies: '海康威视、移远通信、阿里云、海尔智家、涂鸦智能', growth: '初级 → 中级（2-3年）→ 高级/解决方案架构师（5-7年）→ IoT产品总监', prep: '大一学习 C 语言和计算机网络基础，大二掌握 MQTT/TCP/IP 协议和 MCU 开发，大三学习数据库、云平台和低功耗设计，大四完成一个端到端的物联网系统项目。四年参加物联网竞赛和嵌入式竞赛，积累设备到云端的数据链路开发经验，毕业时能独立设计物联网解决方案。' },
+      { name: '嵌入式硬件工程师', group: 'control', desc: '设计电路板、接口、电源和传感器信号链路。', tags: ['原理图', 'PCB', '示波器'], detail: ['把系统需求落实成稳定的电路和板卡。', '需要掌握模电、数电、PCB 和仪器使用。'], salary: '9K – 24K', companies: '中兴、瑞芯微、全志、立创商城、华勤技术', growth: '初级 → 中级（3年）→ 高级/硬件架构师（5-8年）→ 硬件总监/技术合伙人', prep: '大一打牢模电数电基础，大二学习原理图设计和 PCB layout，大三掌握高速电路设计、信号完整性和电源完整性，大四完成一块可商用的电路板打样和测试。四年通过电子设计竞赛和实验室项目积累经验，熟练使用示波器和各类仪器，毕业时具备独立设计硬件产品的能力。' },
+      { name: '硬件测试工程师', group: 'control', desc: '验证板卡和整机功能，定位异常并推动改进。', tags: ['测试', '定位', '可靠性'], detail: ['让设备从"能工作"变成"稳定工作"。', '适合喜欢观察、验证和解决工程问题的同学。'], salary: '7K – 20K', companies: '闻泰科技、比亚迪、TCL华星、华勤技术、富士康', growth: '初级 → 中级（2-3年）→ 高级/测试架构师（5-7年）→ 质量总监/可靠性专家', prep: '大一学习模电数电和编程基础，大二掌握仪器使用和基础测试方法，大三学习可靠性测试、EMC 和失效分析，大四完成一个完整产品的测试方案设计和执行。四年参与实验室项目和校企合作测试工作，积累板级和系统级测试经验，毕业时能独立设计测试用例和定位工程问题。' },
+      { name: 'PLC 工程师', group: 'control', desc: '编写工业控制程序并调试生产线设备。', tags: ['PLC', '梯形图', '工业通信'], detail: ['控制工业现场的设备、产线和执行机构。', '需要理解 PLC、变频器、触摸屏和工业网络。'], salary: '6K – 18K', companies: '汇川技术、信捷电气、西门子、三菱、ABB', growth: '初级 → 中级（2-3年）→ 高级/自动化系统工程师（5-8年）→ 项目总监/技术顾问', prep: '大一掌握电路基础和 C 语言，大二学习电气控制、PLC 编程和变频器，大三掌握工业通信、触摸屏和 SCADA，大四完成一个完整的产线控制项目。四年通过自动化生产线实训和实习积累现场经验，考取 PLC 编程相关证书，毕业时能独立完成工业自动化项目的编程和调试。' },
+      { name: '自动化工程师', group: 'control', desc: '负责自动化设备、传感器和整套控制系统。', tags: ['产线', '控制系统', '调试'], detail: ['把多个设备和控制模块组成完整系统。', '工作中需要软硬件结合与现场协作能力。'], salary: '7K – 20K', companies: '汇川技术、中控技术、新松机器人、埃斯顿、宝信软件', growth: '初级 → 中级（3年）→ 高级/系统架构师（5-8年）→ 技术总监/自主创业', prep: '大一学习电路、C 语言和高数，大二掌握自控原理、传感器和电机拖动，大三学习现代控制理论和系统集成，大四完成一个完整的自动化系统设计项目。四年参加电子设计竞赛和机器人大赛，通过实习积累产线调试经验，毕业时具备自动化系统设计、集成和调试的完整能力。' },
+      { name: '电力电子工程师', group: 'control', desc: '设计电源、逆变器、变换器和功率控制系统。', tags: ['功率器件', 'PWM', '电源'], detail: ['关注能量如何变换、传输和高效控制。', '适合对电路、器件和能源设备感兴趣的同学。'], salary: '10K – 28K', companies: '阳光电源、比亚迪、宁德时代、台达、理懋机电', growth: '初级 → 中级（3年）→ 高级/功率专家（5-8年）→ 技术总监/产品线负责人', prep: '大一打牢电路原理和模电基础，大二学习电机学和磁路设计，大三掌握电力电子拓扑（ACDC/DCDC/逆变器）和控制算法，大四完成一个电源或变换器实物项目。四年参加电力电子竞赛和嵌入式芯片设计大赛，毕业时能独立设计功率电源和新能源变换系统。' },
+      { name: '电气工程师', group: 'control', desc: '从事供配电、电气设计、继电保护和电气系统运维，保障电力系统的安全、稳定和经济运行。', tags: ['供配电', '继电保护', '电气设计'], detail: ['从发电、输电到配电全链路中的电气系统设计、运行与维护。', '适合对电力系统、高电压技术和电气设备感兴趣的同学。'], salary: '7K – 22K', companies: '国家电网、南方电网、广西电网、柳州供电局、防城港核电', growth: '初级 → 中级（3年）→ 高级/电气主管（5-8年）→ 电气总工/项目经理', prep: '大一学习电路原理和高数，大二掌握电机学和模电数电，大三学习电力系统分析、继电保护和供配电设计，大四通过电网校招或考研。四年通过变电站实习、课程设计和电力系统竞赛积累经验，毕业时具备供配电系统设计和电气运维能力，可进入电网公司或电力设计院。' },
+      { name: '电机控制工程师', group: 'control', desc: '控制电机的速度、位置和转矩。', tags: ['FOC', 'PID', 'DSP'], detail: ['让电机按目标平稳、精准地运动。', '需要结合电机原理、控制算法和嵌入式实现。'], salary: '9K – 26K', companies: '汇川技术、比亚迪、上海电驱动、精进电动、方正电机', growth: '初级 → 中级（2-3年）→ 高级/控制算法专家（5-8年） → 技术负责人/专利发明人', prep: '大一学习电路和高数，大二掌握电机学、模电数和自控原理，大三深入学习 FOC 控制算法、DSP 和电机驱动电路，大四完成一个完整的电机控制系统项目。四年参加电子设计竞赛和机器人竞赛，积累电机选型、驱动设计和调试经验，毕业时具备永磁同步电机和无刷直流电机的控制开发能力。' },
+      { name: '机器人控制工程师', group: 'robot', desc: '开发机器人的运动、导航和整机控制逻辑。', tags: ['运动学', '控制算法', 'ROS'], detail: ['把机器人要完成的动作变成可执行的控制策略。', '适合喜欢数学、系统和整机调试的同学。'], salary: '12K – 32K', companies: '大疆、宇树、优必选、库犸、新松机器人', growth: '初级 → 中级（3年）→ 高级/运动控制专家（5-8年）→ 技术总监/机器人公司创始人', prep: '大一学习 C++ 和高数基础，大二掌握运动学、自控原理和 ROS 基础，大三深入学习轨迹规划、视觉伺服和整机控制，大四完成一个机器人整机控制系统。四年参加 Robocon 和机器人大赛，积累机械臂或移动机器人的控制经验，毕业时具备机器人整机运动控制开发能力。' },
+      { name: '机器视觉工程师', group: 'robot', desc: '让机器通过相机识别目标、位置和环境。', tags: ['OpenCV', '识别', '定位'], detail: ['从图像中提取机器可以使用的信息。', '可以从 Python、OpenCV 和基础图像处理开始。'], salary: '12K – 35K', companies: '大疆、海康威视、商汤、旷视、地平线', growth: '初级 → 中级（2-3年）→ 高级/AI视觉专家（5-7年）→ 技术总监/AI产品负责人', prep: '大一学习 Python 和线性代数，大二掌握 OpenCV 和基础图像处理，大三学习深度学习、目标检测和三维视觉，大四完成一个完整的机器视觉应用项目。四年参加视觉相关竞赛和开源项目，积累数据集构建和模型部署经验，毕业时具备工业视觉检测或机器人视觉定位的工程能力。' },
+      { name: '飞控工程师', group: 'robot', desc: '负责无人机姿态、导航和飞行稳定性控制。', tags: ['姿态', '导航', '传感器融合'], detail: ['让飞行器在复杂环境中保持稳定并完成任务。', '需要学习控制理论、IMU、嵌入式和飞控系统。'], salary: '12K – 30K', companies: '大疆、极飞、纵横、亿航、鸿翼智能', growth: '初级 → 中级（2-3年）→ 高级/飞控架构师（5-8年）→ 技术总监/飞控产品负责人', prep: '大一学习 C 语言、高数和物理基础，大二掌握自动控制原理、IMU 传感器和嵌入式开发，大三深入学习飞控算法、姿态估计和导航融合，大四完成一个多旋翼飞控系统并完成试飞。四年参加 Robocon 和飞行器竞赛，积累传感器标定、PID 调参和实飞调试经验，毕业时具备无人机飞控开发能力。' }
     ];
 
     const roleProfiles = {
@@ -889,6 +905,7 @@
       'PLC 工程师': { work: '编写 PLC 程序，配置变频器、触摸屏和工业网络，调试生产线的顺序与安全逻辑。', fit: '喜欢现场设备和确定性控制，能接受出差、联调和与多工种协作。', start: '数字逻辑 → PLC 梯形图 → HMI → 工业通信；先做一套输送带启停控制。' },
       '自动化工程师': { work: '把传感器、执行机构、控制器和上位机整合成可交付的自动化系统。', fit: '擅长拆解复杂现场问题，愿意在软件、硬件和机械之间沟通。', start: 'PLC / 电气图 → 控制柜 → 现场总线 → 系统调试；从一个小型工站开始。' },
       '电力电子工程师': { work: '设计电源、逆变器和功率变换电路，关注效率、热管理和保护策略。', fit: '对能量转换和器件特性着迷，愿意深入电路分析与实验验证。', start: '电路基础 → 功率器件 → PWM → 磁性元件与热设计；先完成一个 DC-DC 电源。' },
+      '电气工程师': { work: '从事供配电系统设计、继电保护、电气设备选型与运维，保障电力系统的安全、稳定和经济运行。', fit: '对电力系统、高电压技术和电气设备有浓厚兴趣，愿意深入学习和现场实践。', start: '电路原理 → 电机学 → 电力系统分析 → 继电保护 → 供配电设计；从配电网课程设计和变电站实习开始。' },
       '电机控制工程师': { work: '建立电机模型并实现速度、位置和转矩控制，让运动系统平稳、快速、精准。', fit: '喜欢数学模型、波形和运动效果，愿意反复调参和做实验。', start: '控制理论 → PID → 编码器 → FOC / DSP；从直流电机闭环控制开始。' },
       '机器人控制工程师': { work: '负责机器人的运动学、轨迹规划、导航和整机状态机，把任务转成可靠动作。', fit: '喜欢系统思考和整机调试，愿意用数学解释运动和误差。', start: '线代 / 控制 → 运动学 → ROS 2 → 规划与状态机；先让移动底盘完成一条轨迹。' },
       '机器视觉工程师': { work: '从相机图像中识别目标、位置和缺陷，并把结果交给控制系统执行。', fit: '对图像、几何和实验验证感兴趣，愿意处理数据和光照等不确定性。', start: 'Python → OpenCV → 相机标定 → 深度学习；先做颜色或形状识别项目。' },
@@ -905,6 +922,7 @@
       'PLC 工程师': ['日常任务：编写梯形图和结构化文本，配置 HMI、变频器与工业网络。', '典型产出：PLC 程序、电气控制逻辑、I/O 表和现场调试记录。', '协作对象：电气设计、机械、工艺和生产现场团队。', '成长方向：工业控制、运动控制、产线数字化和智能制造。'],
       '自动化工程师': ['日常任务：把传感器、执行机构、控制器和上位机整合成完整工站。', '典型产出：控制方案、电气图、调试流程、设备参数和交付文档。', '协作对象：机械、电气、软件、工艺和客户现场团队。', '成长方向：自动化系统集成、智能工厂、机器人产线和项目管理。'],
       '电力电子工程师': ['日常任务：设计 DC-DC、逆变器和功率变换电路，处理效率、热和保护问题。', '典型产出：拓扑方案、仿真波形、功率板卡、测试数据和安全保护策略。', '协作对象：硬件、控制、结构散热和认证团队。', '成长方向：新能源、电源、电驱、储能和功率器件应用。'],
+      '电气工程师': ['日常任务：供配电系统设计、继电保护整定、电气设备选型与投运、变电站/配电房运维。', '典型产出：电气主接线图、继电保护方案、设备选型清单、试验报告和运维手册。', '协作对象：自动化、机械、土建、调度和供电部门。', '成长方向：电网公司、电力设计院、发电集团、新能源企业和电气设备厂商。'],
       '电机控制工程师': ['日常任务：建立电机模型，实现速度、位置、转矩闭环并进行参数整定。', '典型产出：控制算法、驱动固件、标定工具、波形分析和性能报告。', '协作对象：电机、电源、机械和嵌入式团队。', '成长方向：伺服系统、机器人关节、电动车电驱和运动控制。'],
       '机器人控制工程师': ['日常任务：处理运动学、轨迹规划、导航、状态机和整机动作策略。', '典型产出：控制节点、规划算法、仿真结果、动作参数和任务成功率报告。', '协作对象：机械、嵌入式、视觉和算法团队。', '成长方向：移动机器人、机械臂、无人系统和智能制造。'],
       '机器视觉工程师': ['日常任务：采集和清洗图像，完成标定、检测、识别、定位并优化光照和误检。', '典型产出：数据集、视觉算法、推理程序、评测指标和部署模型。', '协作对象：算法、机械、控制、产品和现场工程团队。', '成长方向：工业检测、机器人视觉、自动驾驶和边缘 AI。'],
@@ -920,6 +938,7 @@
       'PLC 工程师': ['工作流程：读工艺流程 → 绘制 I/O 表 → 编写逻辑 → 配置 HMI/变频器 → 单机调试 → 现场交付。', '关键难点：安全互锁、时序逻辑、现场干扰、设备兼容和停机窗口有限。', '行业场景：包装、物流、能源、制造产线和设备集成商。'],
       '自动化工程师': ['工作流程：现场调研 → 方案设计 → 设备选型 → 控制柜与程序 → 联机调试 → 验收维护。', '关键难点：多专业协作、现场变化、节拍优化、故障定位和交付管理。', '行业场景：智能工厂、仓储物流、汽车制造、食品医药和过程工业。'],
       '电力电子工程师': ['工作流程：确定功率指标 → 选择拓扑 → 仿真 → 样机 → 热测试/EMI 测试 → 可靠性验证。', '关键难点：开关损耗、环路稳定、热设计、保护策略、器件应力和安全规范。', '行业场景：充电桩、光伏逆变、储能、电源模块、电动车和工业电源。'],
+      '电气工程师': ['工作流程：负荷计算 → 主接线设计 → 设备选型 → 二次回路（继保/监控） → 安装调试 → 投运验收。', '关键难点：短路电流计算、保护配合、防雷接地、设备选型的经济性与可靠性平衡。', '行业场景：电网公司、电力设计院、发电集团、新能源电站和大型工业企业。'],
       '电机控制工程师': ['工作流程：获取电机参数 → 建模 → 采样与驱动 → 闭环控制 → 参数辨识 → 工况测试。', '关键难点：采样噪声、延迟、弱磁、低速抖动、负载变化和保护逻辑。', '行业场景：伺服驱动、机器人关节、无人机、电动车和家电压缩机。'],
       '机器人控制工程师': ['工作流程：建立运动模型 → 规划轨迹 → 编写控制节点 → 仿真 → 实机标定 → 任务验收。', '关键难点：模型误差、碰撞安全、实时性、定位漂移和复杂环境鲁棒性。', '行业场景：协作机器人、移动机器人、仓储 AGV、特种机器人和无人系统。'],
       '机器视觉工程师': ['工作流程：定义缺陷/目标 → 采集数据 → 标注清洗 → 训练或设计算法 → 部署 → 现场调参。', '关键难点：光照变化、样本偏差、误检漏检、实时推理和边缘设备算力。', '行业场景：工业质检、智能交通、机器人定位、安防和医疗影像辅助。'],
@@ -1082,6 +1101,14 @@
       const detailEl = document.getElementById('roleDetail');
       detailEl.innerHTML = (role.detail || []).map(item => `<li>${item}</li>`).join('');
       detailEl.hidden = !(role.detail && role.detail.length);
+      const prepEl = document.getElementById('rolePrep');
+      const prepTextEl = document.getElementById('rolePrepText');
+      if (role.prep) {
+        prepEl.hidden = false;
+        prepTextEl.textContent = role.prep;
+      } else {
+        prepEl.hidden = true;
+      }
       backdrop.classList.add('open');
     }
     const competitions = [
@@ -1120,8 +1147,8 @@
         shortDesc: '全球知名的大学生程序设计竞赛，考察算法与数据结构解决实际问题的能力。',
         fullDesc: 'ACM-ICPC（国际大学生程序设计竞赛）是全球知名的大学生程序设计竞赛，以团队形式参赛，主要考察选手运用算法与数据结构解决实际问题的能力。比赛通常要求在有限时间内完成多道编程题，对编程基础、算法思维和团队协作能力要求较高。',
         skills: 'C/C++/Python/Java 编程、数据结构、算法、数学基础、图论、动态规划、搜索',
-        value: 'ACM 训练的 C/C++、数据结构、算法和编程能力与计算机类研究生复试中的机考高度契合。只要得国奖可免华为机试，直接面试。部分比赛现场有腾讯、字节、华为等招聘会，国二以上大概率能得到实习机会。',
-        enterprise: '腾讯、字节跳动、华为等大型科技企业的部分技术岗位会明确关注 ACM/ICPC 等算法竞赛经历。同花顺设有专门的"ACMer 摘星计划"，直接面向 ACM 竞赛人才设置专项岗位。',
+        value: 'ACM 训练的 C/C++、数据结构、算法和编程能力与计算机类研究生复试中的机考高度契合。只要得国奖可免机试，直接面试。部分比赛现场有腾讯、字节、大疆等招聘会，国二以上大概率能得到实习机会。',
+        enterprise: '腾讯、字节跳动、大疆、CVTE等大型科技企业的部分技术岗位会明确关注 ACM/ICPC 等算法竞赛经历。同花顺设有专门的"ACMer 摘星计划"，直接面向 ACM 竞赛人才设置专项岗位。',
         difficulty: 'high',
         difficultyLabel: '较难',
         grade: '大一到大四都能参与，一年至少有 10 场国赛',
@@ -1191,7 +1218,7 @@
         fullDesc: '中国机器人及人工智能大赛由教育部认可并列为 A 类赛事，覆盖机器人技术、人工智能技术、机器人竞技、人工智能竞技四大方向，包括 Roban 机器人赛、资源采集、技能对抗等赛项。融合机械设计、嵌入式控制、机器视觉、深度学习、自主决策等全栈技术，适合机器人战队、AI 实验室和嵌入式团队组队参赛。',
         skills: '机械设计与加工、嵌入式控制（STM32/Arduino/Raspberry Pi）、ROS 机器人操作系统、机器视觉（OpenCV/YOLO）、深度学习（TensorFlow/PyTorch）、自主导航与决策',
         value: '教育部 A 类白名单赛事，含金量高。获奖可按本校规则加综测分，对奖学金申请有帮助。机器人+AI 交叉能力是当前企业最看重的方向之一，获奖经历在机器人工程、AI 算法、自动驾驶、智能制造等方向的求职中认可度很高。',
-        enterprise: '大疆、宇树科技、库犸动力、比亚迪、华为、阿里云等均设有机器人/AI 方向专项招聘，该赛事经历可直通简历筛选。',
+        enterprise: '大疆、宇树科技、库犸动力、比亚迪、海康威视、阿里云等均设有机器人/AI 方向专项招聘，该赛事经历可直通简历筛选。',
         difficulty: 'medium',
         difficultyLabel: '中等',
         grade: '大一大二加入战队积累，大二下学期至大三冲击国奖',
@@ -1372,15 +1399,11 @@
       document.getElementById('modalList').innerHTML = club.detail.map(item => `<li>${item}</li>`).join('');
       if (club.name === '嵌入式智控协会') {
         document.getElementById('clubExtraContent').innerHTML = `
-          <div class="club-module"><h4>01 · 协会简介</h4><p>嵌入式智控协会专注于嵌入式系统学习、实践与创新，汇聚对物联网、微处理器、人工智能、国产替代、电力电子和 OpenHarmony 感兴趣的同学。协会以动手实践为基石，培养成员在嵌入式硬件设计、软件开发和智能算法实现方面的能力。</p><div class="club-module-grid"><div class="club-module-card"><strong>学习交流</strong><span>技术分享、基础培训、代码阅读与经验交流。</span></div><div class="club-module-card"><strong>项目实践</strong><span>从传感器、单片机到联网设备，完成可演示作品。</span></div><div class="club-module-card"><strong>能力成长</strong><span>提升硬件设计、软件开发、算法实现和团队协作能力。</span></div><div class="club-module-card"><strong>技术方向</strong><span>嵌入式、电力电子、国产替代软件与 OpenHarmony。</span></div></div><div class="club-gallery"><button type="button" class="club-gallery-item gallery-hero" data-gallery-title="协会合照 01">协会合照 01</button><button type="button" class="club-gallery-item gallery-tall gallery-tone-2" data-gallery-title="项目讨论合照">项目讨论合照</button><button type="button" class="club-gallery-item gallery-wide gallery-tone-3" data-gallery-title="实践活动合照">实践活动合照</button><button type="button" class="club-gallery-item" data-gallery-title="板卡调试现场">板卡调试现场</button><button type="button" class="club-gallery-item" data-gallery-title="培训分享现场">培训分享现场</button><button type="button" class="club-gallery-item gallery-wide gallery-tone-2" data-gallery-title="团队协作记录">团队协作记录</button></div></div>
-          <div class="club-module"><h4>02 · 竞赛与成果</h4><p>协会组织成员参加电子设计、数学建模、工程训练、算法和嵌入式相关赛事，以赛促学，把课堂知识转化为硬件实物和可复现的软件成果。</p><div class="club-gallery"><button type="button" class="club-gallery-item certificate gallery-hero" data-gallery-title="获奖证书 01">获奖证书 01</button><button type="button" class="club-gallery-item certificate gallery-tall" data-gallery-title="竞赛证书 02">竞赛证书 02</button><button type="button" class="club-gallery-item gallery-wide gallery-tone-2" data-gallery-title="比赛现场照片 01">比赛现场照片 01</button><button type="button" class="club-gallery-item gallery-tone-3" data-gallery-title="答辩现场">答辩现场</button><button type="button" class="club-gallery-item gallery-tone-2" data-gallery-title="作品展示">作品展示</button><button type="button" class="club-gallery-item gallery-wide" data-gallery-title="赛后复盘">赛后复盘</button><button type="button" class="club-gallery-item certificate" data-gallery-title="竞赛证书 03">竞赛证书 03</button><button type="button" class="club-gallery-item gallery-tone-3" data-gallery-title="比赛现场照片 02">比赛现场照片 02</button></div></div>
-          <div class="club-module"><h4>03 · 部门分布</h4><p>协会按项目需要协同分工，新成员可以先选择一个部门学习，再逐步参与跨部门项目。</p><div class="club-module-grid"><div class="club-module-card"><strong>硬件设计部</strong><span>原理图、PCB、焊接、仪器测量与板卡调试。</span></div><div class="club-module-card"><strong>软件开发部</strong><span>C/C++、单片机、Linux、通信协议与工具链。</span></div><div class="club-module-card"><strong>算法与视觉部</strong><span>Python、机器学习、OpenCV、数据处理与边缘 AI。</span></div><div class="club-module-card"><strong>竞赛与项目部</strong><span>赛题分析、项目管理、技术文档、答辩与展示。</span></div></div></div>
-          <div class="club-module"><h4>04 · 联系我们</h4><p>欢迎对嵌入式、AI、物联网和硬件实践感兴趣的同学加入，也欢迎其他社团与协会交流合作。</p><div class="club-contact"><div class="club-contact-card"><strong>协会官网</strong><span>官网链接待补充</span></div><div class="club-contact-card"><strong>QQ群</strong><span>QQ群二维码待补充</span></div><div class="club-contact-card"><strong>公众号</strong><span>公众号二维码待补充</span></div></div></div>`;
-        clubExtraContent.innerHTML = `
           <div class="club-module"><h4>01 · 协会定位</h4><p>官网将嵌入式智控协会定位为广西科技大学面向嵌入式系统学习、实践与创新的学生社团，服务对象覆盖对物联网、单片机、人工智能、电力电子和智能控制感兴趣的同学。协会以动手实践为基石，让成员在交流、培训和项目中把知识转化为可运行的作品。</p><div class="club-module-grid"><div class="club-module-card"><strong>学习平台</strong><span>通过培训中心、代码阅读和实验室学习，建立从 C 语言、单片机到系统开发的基础。</span></div><div class="club-module-card"><strong>工程实践</strong><span>围绕传感器、PCB、控制器、联网设备和智能终端完成可测试、可复现的项目。</span></div><div class="club-module-card"><strong>竞赛支持</strong><span>以赛促学，支持嵌入式芯片与系统设计、机器人、电子设计和数学建模等方向。</span></div><div class="club-module-card"><strong>开放协作</strong><span>通过协会动态、企业共建联盟和 OpenHarmony 等开源生态拓展技术视野。</span></div></div></div>
           <div class="club-module"><h4>02 · 培训与实践</h4><p>本地协会资料显示，协会持续开展 C 语言、STM32、GPIO、蓝牙通信、电机驱动、OLED、PCB 和实验室考核等训练，也维护元器件管理与培训活动中心。</p><div class="club-module-grid"><div class="club-module-card"><strong>嵌入式基础</strong><span>C 语言、STM32、GPIO、串口通信、传感器与执行器。</span></div><div class="club-module-card"><strong>硬件与电力电子</strong><span>模电数电、立创 EDA、PCB 制作、电源和电机驱动。</span></div><div class="club-module-card"><strong>智能系统</strong><span>人工智能、机器视觉、物联网和边缘设备应用。</span></div><div class="club-module-card"><strong>国产软件生态</strong><span>关注 OpenHarmony、国产芯片和可替代软件工具链。</span></div></div></div>
           <div class="club-module"><h4>03 · 组织架构</h4><p>官网 2025—2026 成员页设置会长团、技术部、组织部、统筹部和宣传部。新成员可以先加入技术学习，再参与活动组织、项目协作或内容传播。</p><div class="club-module-grid"><div class="club-module-card"><strong>会长团</strong><span>年度规划、对外联络与发展决策。</span></div><div class="club-module-card"><strong>技术部</strong><span>技术培训、实验室学习与竞赛项目。</span></div><div class="club-module-card"><strong>组织部</strong><span>成员管理、活动执行与内部协作。</span></div><div class="club-module-card"><strong>统筹部</strong><span>实验室、器件、场地和项目资源协调。</span></div><div class="club-module-card"><strong>宣传部</strong><span>官网维护、协会动态和成果展示。</span></div></div></div>
-          <div class="club-module"><h4>04 · 官方入口</h4><p>协会官网提供协会动态、培训中心、成员架构、实验室导航、企业共建联盟和元器件管理等入口。</p><div class="club-contact"><div class="club-contact-card"><strong>协会官网</strong><span><a href="https://www.eica.cc/" target="_blank" rel="noopener noreferrer">www.eica.cc ↗</a></span></div><div class="club-contact-card"><strong>实验室位置</strong><span>T7-103，面向成员开放实践。</span></div><div class="club-contact-card"><strong>元器件管理</strong><span><a href="https://cmp.eica.cc/" target="_blank" rel="noopener noreferrer">cmp.eica.cc ↗</a></span></div><div class="club-contact-card"><strong>协会口号</strong><span>让智能控制更简单。</span></div></div></div>`;
+          <div class="club-module"><h4>04 · 官方入口</h4><p>协会官网提供协会动态、培训中心、成员架构、实验室导航、企业共建联盟和元器件管理等入口。</p><div class="club-contact"><div class="club-contact-card"><strong>协会官网</strong><span><a href="https://www.eica.cc/" target="_blank" rel="noopener noreferrer">www.eica.cc ↗</a></span></div><div class="club-contact-card"><strong>实验室位置</strong><span>T7-103，面向成员开放实践。</span></div><div class="club-contact-card"><strong>元器件管理</strong><span><a href="https://cmp.eica.cc/" target="_blank" rel="noopener noreferrer">cmp.eica.cc ↗</a></span></div><div class="club-contact-card"><strong>协会口号</strong><span>让智能控制更简单。</span></div></div></div>
+          <div class="club-module"><h4>05 · 活动相册</h4><p>协会培训、实验室实践、竞赛出征和获奖等记录。涵盖嵌入式芯片设计大赛、睿抗机器人开发者大赛、电子设计竞赛等赛事。</p><div class="club-gallery">${[['协会合照','asset/pic/eica/1.jpg','gallery-hero'],['讲座培训现场','asset/pic/eica/2.png',''],['实验室训练 01','asset/pic/eica/3.png','gallery-tall'],['实验室训练 02','asset/pic/eica/4.jpg',''],['小车竞赛/考核','asset/pic/eica/5.jpg',''],['开放原子开源大赛宣讲会','asset/pic/eica/6.jpg','gallery-tall'],['协会活动合照','asset/pic/eica/7.jpg','gallery-wide'],['培训与项目讨论','asset/pic/eica/8.jpg',''],['嵌入式芯片设计大赛全国总决赛','asset/pic/eica/eica-chip-final.png','gallery-wide'],['睿抗机器人开发者大赛','asset/pic/eica/eica-robot-final.jpg','gallery-tall'],['2026 TI杯电子设计竞赛','asset/pic/eica/9.jpg',''],['小车竞赛/考核现场','asset/pic/eica/10.jpg',''],['团队活动合照','asset/pic/eica/11.jpg',''],['颁奖典礼','asset/pic/eica/eica-award-ceremony.png','']].map(([title,src,cls])=>`<button type="button" class="club-gallery-item has-photo${cls?' '+cls:''}" data-gallery-title="${title}" data-gallery-src="${src}"><img class="gallery-photo" src="${src}" alt="${title}" loading="lazy"></button>`).join('')}</div></div>`;
 
         const eicaAwardFiles = [
           '2025第27届机器人及其人工智能国家一等奖(获奖学生：庞儿茗、赵磊、陈樊超；指导老师：廖凤依).png',
@@ -1388,7 +1411,7 @@
           '2025中国高校智能机器人创意大赛组国家二等奖(获奖学生：伍师宝、曹俊、莫敏；指导老师：石玉秋).jpg',
           '2025年睿抗机器人开发者大赛国家二等奖(获奖学生：廖俊峰、黄海东；指导老师：高远).jpg',
           '2025第27届机器人及其人工智能国家二等奖(获奖学生：黄海东、王旭晖、叶倩茹；指导老师：石玉秋).png',
-          '2025年8月2025中国工程机器人暨国际公开赛国家级级二等奖。（获奖学生：廖俊峰、万欣雨、杨佳；指导教师：高远、黄华芳）.jpg',
+          '2025年8月2025中国工程机器人大赛暨国际公开赛国家级二等奖。（获奖学生：廖俊峰、万欣雨、杨佳；指导教师：高远、黄华芳）.jpg',
           '2024第十二届全国大学生数字媒体科技作品及创意竞赛国家三等奖(获奖学生：陈健锋、黄海东、黄永幸、庞儿茗、李浩；指导老师：余玲、刘瑞琪).jpg',
           '2025第27届机器人及其人工智能国家级三等奖(获奖学生：廖俊峰、罗威、翟诗雨；指导老师：高远、窦双团).jpg',
           '2025第27届机器人及其人工智能国家优秀奖(获奖学生：韦竣嵩、徐潇潇、廖应涛；指导老师：李忠富).png',
@@ -1407,7 +1430,7 @@
           '2025机器人及其人工智能蓝巧区三.jpg',
           '2024数媒廖俊峰区三.jpg',
           '2025睿抗林华为区三.jpg',
-          '2025"粤嵌软通杯"校一.jpg',
+          '2025粤嵌软通杯校一.jpg',
           '2024电子设计竞赛校一.jpg',
           '2024数学建模竞赛黄海东校三.jpg',
           '2024软件著作权.jpg',
@@ -1420,7 +1443,7 @@
           ['2025 · 中国高校智能机器人创意大赛国家二等奖', '2025中国高校智能机器人创意大赛组国家二等奖(获奖学生：伍师宝、曹俊、莫敏；指导老师：石玉秋).jpg'],
           ['2025 · 睿抗机器人开发者大赛国家二等奖', '2025年睿抗机器人开发者大赛国家二等奖(获奖学生：廖俊峰、黄海东；指导老师：高远).jpg'],
           ['2025 · 第27届中国机器人及人工智能大赛国家二等奖', '2025第27届机器人及其人工智能国家二等奖(获奖学生：黄海东、王旭晖、叶倩茹；指导老师：石玉秋).png'],
-          ['2025 · 中国工程机器人大赛暨国际公开赛国家二等奖', '2025年8月2025中国工程机器人暨国际公开赛国家级级二等奖。（获奖学生：廖俊峰、万欣雨、杨佳；指导教师：高远、黄华芳）.jpg'],
+          ['2025 · 中国工程机器人大赛暨国际公开赛国家二等奖', '2025年8月2025中国工程机器人大赛暨国际公开赛国家级二等奖。（获奖学生：廖俊峰、万欣雨、杨佳；指导教师：高远、黄华芳）.jpg'],
           ['2024 · 数字媒体科技作品及创意竞赛国家三等奖', '2024第十二届全国大学生数字媒体科技作品及创意竞赛国家三等奖(获奖学生：陈健锋、黄海东、黄永幸、庞儿茗、李浩；指导老师：余玲、刘瑞琪).jpg'],
           ['2025 · 第27届中国机器人及人工智能大赛国家级三等奖', '2025第27届机器人及其人工智能国家级三等奖(获奖学生：廖俊峰、罗威、翟诗雨；指导老师：高远、窦双团).jpg'],
           ['2025 · 第27届中国机器人及人工智能大赛国家优秀奖', '2025第27届机器人及其人工智能国家优秀奖(获奖学生：韦竣嵩、徐潇潇、廖应涛；指导老师：李忠富).png'],
@@ -1464,7 +1487,7 @@
       }
       if (isLcrClub) {
         clubExtraContent.insertAdjacentHTML('afterbegin', `<div class="lcr-hero-strip"><div><h4>把机器人从图纸带到赛场。</h4><p>从 2018 年建队至今，LCR 用机械、电控、电路和算法四条技术线，把每一次赛题拆解成可以制造、可以调试、可以上场的机器人。</p></div><div class="lcr-hero-stats"><div class="lcr-hero-stat"><strong>2018</strong><span>战队建立</span></div><div class="lcr-hero-stat"><strong>4</strong><span>技术组协作</span></div><div class="lcr-hero-stat"><strong>3</strong><span>Robocon 赛项</span></div><div class="lcr-hero-stat"><strong>1093347241</strong><span>招新宣讲群</span></div></div></div>`);
-        clubExtraContent.querySelector('.lcr-hero-strip').insertAdjacentHTML('afterend', `<div class="lcr-video-module"><div><h4>2027 战队宣传片</h4><p>从机械结构、电控程序到算法视觉，看看 LCR 如何把训练、联调和比赛现场串成一条完整的工程实践链路。</p></div><video controls preload="metadata" playsinline><source src="asset/mov/lcr2027宣传片.mp4" type="video/mp4">你的浏览器不支持视频播放。</video></div>`);
+        clubExtraContent.querySelector('.lcr-hero-strip').insertAdjacentHTML('afterend', ``);
         clubExtraContent.querySelector('.club-module')?.classList.add('lcr-intro-module');
         const contactModule = [...clubExtraContent.querySelectorAll('.club-module')].find(module => (module.querySelector('h4')?.textContent || '').startsWith('04'));
         if (contactModule) {
@@ -1566,7 +1589,7 @@
       { text: '面对一个陌生系统，你通常先关注什么？', options: [['数据如何流动、代码如何执行', 'code'], ['电源、接口和信号质量', 'hardware'], ['输入、输出和反馈关系', 'control'], ['模块如何协同完成任务', 'robot'], ['系统如何感知和判断环境', 'vision']] },
       { text: '哪种学习方式最适合你？', options: [['边读文档边写小程序', 'code'], ['边测量边修改电路', 'hardware'], ['边建模边调参数', 'control'], ['边组装边做整机测试', 'robot'], ['边采集数据边优化模型', 'vision']] },
       { text: '你对数学的兴趣更接近哪一项？', options: [['用逻辑和算法解决问题', 'code'], ['分析电路和器件参数', 'hardware'], ['研究系统响应和稳定性', 'control'], ['理解运动和空间关系', 'robot'], ['研究图像、特征和几何', 'vision']] },
-      { text: '你更想让哪类设备变得更聪明？', options: [['传感器节点和智能终端', 'code'], ['电源、板卡和仪器', 'hardware'], ['电机、产线和执行机构', 'control'], ['机器人和无人机', 'robot'], ['相机和检测设备', 'vision']] },
+      { text: '你更想让哪类设备变得更聪明？', options: [['传感器节点和智能终端', 'code'], ['电源、板卡和仪器', 'hardware'], ['电机、产线和执行机构', 'control'], ['机器人和无人机', 'robot'], ['配电系统、变压器和继电保护装置', 'electrical'], ['相机和检测设备', 'vision']] },
       { text: '遇到偶发故障时，你会优先怎么做？', options: [['加日志、断点和测试用例', 'code'], ['测电压、波形和连接关系', 'hardware'], ['检查反馈、参数和控制环', 'control'], ['从整机复现并逐模块排查', 'robot'], ['检查图像、光照和数据质量', 'vision']] },
       { text: '你更能接受哪种工作节奏？', options: [['安静地长时间调试代码', 'code'], ['实验室里反复验证样机', 'hardware'], ['现场联调设备和产线', 'control'], ['围绕比赛节点推进整机', 'robot'], ['不断试验数据和模型', 'vision']] },
       { text: '哪种成果最适合放进你的作品集？', options: [['一个可复用的软件模块', 'code'], ['一块自己设计的 PCB', 'hardware'], ['一套稳定运行的控制系统', 'control'], ['一台完成任务的机器人', 'robot'], ['一个可解释的视觉应用', 'vision']] },
@@ -1596,13 +1619,15 @@
       code: { title: '嵌入式软件 / Linux 路线', text: '从 C 语言和单片机开始，把每一次控制和通信都做成可运行的模块。', role: '嵌入式软件工程师', club: '嵌入式智控协会、LCR龙城机器人战队', start: 'C 语言 + STM32' },
       hardware: { title: '硬件设计 / 测试路线', text: '从电路、器件和仪器开始，逐步做出稳定的板卡与整机系统。', role: '嵌入式硬件工程师', club: '低空飞行器协会、电气信息创新协会', start: '模电数电 + PCB' },
       control: { title: '自动化 / 电机控制路线', text: '从控制对象和传感器入手，让电机、设备和产线按照目标稳定运行。', role: '电机控制工程师', club: '电气信息创新协会、LCR龙城机器人战队', start: '控制基础 + PLC' },
+      electrical: { title: '电气工程师路线', text: '从电力系统、电机学和继电保护入手，从事供配电设计、电气运维和电网相关工作。', role: '电气工程师', club: '电气信息创新协会、广西科技大学电力系统实验室', start: '电路原理 + 电机学' },
       robot: { title: '机器人控制 / 嵌入式路线', text: '从一个执行器开始理解机器人，最后参与整机控制与系统联调。', role: '机器人控制工程师', club: 'LCR龙城机器人战队、嵌入式智控协会', start: 'C++ + 机器人基础' },
       vision: { title: '视觉 / 智能系统路线', text: '从图像处理开始，让机器获取环境信息，并将视觉结果用于控制决策。', role: '机器视觉工程师', club: '低空飞行器协会、LCR龙城机器人战队', start: 'Python + OpenCV' }
     };
     const roleGroups = {
       code: ['嵌入式软件工程师', '嵌入式 Linux 工程师', '机器人嵌入式工程师', '物联网工程师'],
       hardware: ['嵌入式硬件工程师', '硬件测试工程师'],
-      control: ['PLC 工程师', '自动化工程师', '电力电子工程师', '电机控制工程师'],
+      control: ['PLC 工程师', '自动化工程师', '电力电子工程师', '电气工程师', '电机控制工程师'],
+      electrical: ['电气工程师'],
       robot: ['机器人控制工程师', '飞控工程师'],
       vision: ['机器视觉工程师']
     };
